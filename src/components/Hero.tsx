@@ -36,7 +36,10 @@ export function Hero() {
             </h1>
           </div>
           <div className="hero-sky">
-            <Pixel name="skyline" />
+            <div className="sky-track">
+              <Pixel name="skyline" />
+              <Pixel name="skyline" className="sky-loop" />
+            </div>
           </div>
         </div>
       </section>

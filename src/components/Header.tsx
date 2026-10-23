@@ -2,8 +2,8 @@ import { Lockup } from './Logo';
 
 const LINKS = [
   ['#about', 'About'],
-  ['#day', 'The day'],
   ['#speakers', 'Speakers'],
+  ['#day', 'The day'],
   ['#faq', 'FAQ'],
 ];
 

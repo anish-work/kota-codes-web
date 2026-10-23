@@ -143,6 +143,8 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 @container (min-width: 540px) { .hero-sky .pix { --k: 3; } }
 @container (min-width: 810px) { .hero-sky .pix { --k: 4; } }
 @container (min-width: 1080px) { .hero-sky .pix { --k: 5; } }
+.sky-track { display: flex; flex: none; }
+.sky-loop { display: none; }
 
 .hero-lower { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) { .hero-lower { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
@@ -315,3 +317,42 @@ footer.band { border-top: 0; }
 @media (max-width: 640px) { .foot > div { padding: 16px 20px 22px; } }
 .end { border-bottom: 1px solid var(--line); }
 .end .frame { height: 48px; }
+
+/* Phones: denser cards for the plain-text sections (like the speakers grid), and a hero skyline that
+   runs edge to edge and drifts, so all of Kota passes by. */
+@media (max-width: 640px) {
+  .hero-sky { margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px)) - 1px); justify-content: flex-start; padding-top: 22px; }
+  .hero-sky .pix { --k: 3; }
+  .sky-loop { display: block; }
+  .sky-track { animation: sky-drift 60s linear infinite; }
+
+  .head { padding: 44px 20px 16px; }
+  .head h2 { font-size: 40px; }
+
+  .meta-cell { gap: 20px; }
+  .intro-cell p { font-size: 19px; }
+
+  .about .text { gap: 18px; }
+  .about .text p { font-size: 19px; }
+  .mosaic svg { min-height: 130px; }
+
+  .who { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .who > li { min-height: 0; padding: 16px; gap: 4px; }
+  .who strong { font-size: 17px; line-height: 1.25; }
+  .who span { font-size: 14px; line-height: 1.4; }
+
+  .take { grid-template-columns: repeat(2, minmax(0, 1fr)); counter-reset: take; }
+  .take > li { display: block; min-height: 0; padding: 16px; font-size: 17px; }
+  .take > li::before { counter-increment: take; content: counter(take, decimal-leading-zero) "/"; display: block; margin-bottom: 14px; font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--green-text); }
+
+  /* Schedule: time beside the title instead of above it */
+  .day .side { gap: 10px; }
+  .part h3 { font-size: 22px; }
+  .slots { gap: 16px; }
+  .slots li > div { display: grid; flex: 1; grid-template-columns: 70px minmax(0, 1fr); column-gap: 10px; }
+  .slots time { grid-row: span 2; font-size: 14px; padding-top: 3px; }
+  .slots strong { grid-column: 2; font-size: 18px; margin-top: 0; }
+  .slots p { grid-column: 2; font-size: 15px; }
+}
+@keyframes sky-drift { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .sky-track { animation: none; } }
