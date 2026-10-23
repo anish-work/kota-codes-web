@@ -1,22 +1,21 @@
+import { SWATCH_SIZE, SWATCH_SVG } from '../weave';
+import { WeaveMark } from './Logo';
 import { SectionHead } from './SectionHead';
 
-// Pixel mosaic: a checker panel and the three-slab logo, drawn as square pixels.
-const COLORS: Record<string, string> = { g: '#2E7A3C', l: '#C8F169', f: '#0F3D2E', m: '#6CC08F', e: '#3E9A5A' };
-const PANELS = [
-  ['glggglgg', 'gglgggll', 'lgggllgg', 'gglggglg', 'lgglgggl'],
-  ['ffffffff', 'fffllllf', 'ffmmmmff', 'feeeefff', 'ffffffff'],
-];
-
+// A swatch of Kota Doria cloth beside the woven mark.
 function Mosaic() {
   return (
-    <div className="mosaic" aria-hidden="true">
-      {PANELS.map((rows, i) => (
-        <svg key={i} viewBox="0 0 8 5" preserveAspectRatio="none" shapeRendering="crispEdges">
-          {rows.flatMap((row, y) =>
-            row.split('').map((k, x) => <rect key={`${x}-${y}`} x={x} y={y} width="1.02" height="1.02" fill={COLORS[k]} />),
-          )}
-        </svg>
-      ))}
+    <div className="mosaic">
+      <svg
+        className="lg"
+        viewBox={`0 0 ${SWATCH_SIZE} ${SWATCH_SIZE}`}
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+        dangerouslySetInnerHTML={{ __html: SWATCH_SVG }}
+      />
+      <div className="mosaic-mark">
+        <WeaveMark label="The Kota Codes mark: a K woven into Kota Doria checks" />
+      </div>
     </div>
   );
 }

@@ -1,9 +1,25 @@
-export function Logo({ size = 30 }: { size?: number }) {
+import { MARK_SIZE, MARK_SVG } from '../weave';
+
+// The Kota Doria weave mark. Colours come from --logo-* tokens, so it follows the theme.
+export function WeaveMark({ className = '', label }: { className?: string; label?: string }) {
   return (
-    <svg width={size} height={(size * 26) / 34} viewBox="0 0 34 26" aria-hidden="true">
-      <rect x="0" y="18" width="26" height="7" rx="1.5" fill="#2E7A3C" />
-      <rect x="4" y="9.5" width="26" height="7" rx="1.5" fill="#6CC08F" />
-      <rect x="8" y="1" width="26" height="7" rx="1.5" fill="#C8F169" />
-    </svg>
+    <svg
+      className={`lg ${className}`}
+      viewBox={`0 0 ${MARK_SIZE} ${MARK_SIZE}`}
+      {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true, focusable: false })}
+      dangerouslySetInnerHTML={{ __html: MARK_SVG }}
+    />
+  );
+}
+
+// Side-by-side logo: mark at 2x the wordmark's cap height, then "kota.codes" with a square dot.
+export function Lockup() {
+  return (
+    <span className="lockup">
+      <WeaveMark className="lg-mark" />
+      <span className="wm">
+        kota<i className="dot" aria-hidden="true"></i>codes
+      </span>
+    </span>
   );
 }

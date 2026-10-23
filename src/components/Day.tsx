@@ -1,4 +1,5 @@
 import { EVENT, SCHEDULE } from '../content';
+import { Pixel } from './Pixel';
 import { SectionHead } from './SectionHead';
 
 // "10:55 am" -> "2026-11-01T10:55:00+05:30", so each slot carries a machine-readable time.
@@ -11,7 +12,7 @@ function toIso(label: string) {
 export function Day() {
   return (
     <section aria-labelledby="day-h">
-      <SectionHead id="day" title="the-day/" />
+      <SectionHead id="day" title="the-day/" aside={<Pixel name="chhatri" />} />
       <div className="band">
         <div className="frame cells day">
           <div className="pad side">
@@ -28,10 +29,13 @@ export function Day() {
                 <h3>{part}</h3>
                 <ol className="slots">
                   {slots.map((s) => (
-                    <li key={s.time}>
-                      <time dateTime={toIso(s.time)}>{s.time}</time>
-                      <strong>{s.title}</strong>
-                      {s.note && <p>{s.note}</p>}
+                    <li key={s.time} className={s.pix ? 'with-pix' : undefined}>
+                      <div>
+                        <time dateTime={toIso(s.time)}>{s.time}</time>
+                        <strong>{s.title}</strong>
+                        {s.note && <p>{s.note}</p>}
+                      </div>
+                      {s.pix && <Pixel name={s.pix} />}
                     </li>
                   ))}
                 </ol>
