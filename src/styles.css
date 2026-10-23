@@ -1,5 +1,5 @@
 /* Layout: a visible grid. Full-width bands split by hairlines; a framed 1280px column inside each band; cells divided by 1px lines.
-   One huge wordmark, lowercase slash headings, mono for dates and times, solid green blocks for actions. */
+   One huge headline, lowercase slash headings, mono for dates and times, solid green blocks for actions. */
 :root {
   --bg: #EBECE8;
   --cell: #E1E4DE;
@@ -74,8 +74,9 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 
 /* Hero */
 .mark-cell { padding: 24px 28px 20px; overflow: hidden; }
-.mark { font-weight: 800; font-size: 13vw; line-height: 0.86; letter-spacing: -0.045em; white-space: nowrap; display: inline-block; text-transform: uppercase; }
-@media (min-width: 1312px) { .mark { font-size: 170px; } }
+.mark { margin: 0; font-weight: 800; font-size: 8.4vw; line-height: 0.9; letter-spacing: -0.045em; white-space: nowrap; display: inline-block; text-transform: uppercase; }
+@media (min-width: 1312px) { .mark { font-size: 108px; } }
+.mark > span { display: block; }
 .mark .sq { display: inline-block; width: 0.2em; height: 0.2em; background: var(--green); margin: 0 0.04em 0 0.06em; vertical-align: 0; }
 @media (max-width: 640px) { .mark-cell { padding: 18px 20px 14px; } }
 
@@ -87,8 +88,7 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .intro-cell { display: flex; flex-direction: column; }
 .cells > .intro-cell { background: var(--line); }
 .intro-cell .say { display: flex; flex-direction: column; gap: 16px; flex: 1; }
-.intro-cell h1 { font-size: clamp(30px, 3.4vw, 40px); line-height: 1.12; letter-spacing: -0.02em; font-weight: 600; }
-.intro-cell p { font-size: clamp(19px, 1.8vw, 22px); line-height: 1.45; max-width: 34em; }
+.intro-cell p { font-size: clamp(21px, 2.1vw, 28px); line-height: 1.35; letter-spacing: -0.01em; max-width: 34em; }
 .btn { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 22px; border-radius: 4px; background: var(--green); color: var(--on-green); text-decoration: none; font-size: 19px; font-weight: 600; }
 .btn:hover { filter: brightness(1.1); }
 

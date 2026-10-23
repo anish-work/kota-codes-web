@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { EVENT } from '../content';
 
-// Scale the wordmark to exactly fill its cell. CSS gives a close 13vw fallback before JS runs.
+// Scale the headline so its longest line exactly fills the cell. CSS gives a close vw fallback before JS runs.
 function useFitText() {
   const ref = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
@@ -30,9 +30,9 @@ export function Hero() {
       <section className="band" aria-label={EVENT.name}>
         <div className="frame">
           <div className="mark-cell">
-            <p className="mark" ref={markRef} aria-label="Kota Codes">
-              Kota<span className="sq" aria-hidden="true"></span>Codes
-            </p>
+            <h1 className="mark" ref={markRef}>
+              <span>Kota’s first</span> <span>AI &amp; tech meetup<span className="sq" aria-hidden="true"></span></span>
+            </h1>
           </div>
         </div>
       </section>
@@ -49,7 +49,6 @@ export function Hero() {
           </div>
           <div className="intro-cell cells">
             <div className="pad say">
-              <h1>{EVENT.headline}</h1>
               <p>{EVENT.description}</p>
             </div>
             <div className="pad">

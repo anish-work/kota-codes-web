@@ -10,7 +10,6 @@ export const SITE = {
 
 export const EVENT = {
   name: 'Kota Codes Meetup #01',
-  headline: 'Kota’s first AI & tech meetup',
   description:
     'A free, friendly morning to learn what AI really is, try it yourself, and meet people in Kota who are curious about technology. No coding knowledge needed.',
   start: '2026-11-01T10:30:00+05:30',
