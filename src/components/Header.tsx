@@ -22,8 +22,8 @@ export function Header() {
             {label}
           </a>
         ))}
-        <a className="cta" href="#register">
-          Register <span className="arrow" aria-hidden="true">↗</span>
+        <a className="cta" href="#register-form">
+          Save your seat <span className="arrow" aria-hidden="true">→</span>
         </a>
       </nav>
     </header>

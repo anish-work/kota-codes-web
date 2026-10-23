@@ -52,8 +52,8 @@ export function Hero() {
               <p>{EVENT.description}</p>
             </div>
             <div className="pad">
-              <a className="btn" href="#register">
-                How to register <span className="arrow" aria-hidden="true">↗</span>
+              <a className="btn" href="#register-form">
+                Save your seat <span className="arrow" aria-hidden="true">→</span>
               </a>
             </div>
           </div>

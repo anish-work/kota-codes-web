@@ -1,6 +1,8 @@
 // Single source of truth for page copy and event facts.
 // The page, the JSON-LD structured data and the meta tags all read from here.
 
+import { CONFIG } from './config';
+
 export const SITE = {
   url: 'https://kota.codes',
   name: 'Kota Codes',
@@ -18,7 +20,7 @@ export const EVENT = {
   timeLabel: '10:30 am – 1:30 pm',
   city: 'Kota',
   region: 'Rajasthan',
-  venue: null as string | null, // set when announced
+  venue: CONFIG.venue.name || null, // set in src/config.ts
 };
 
 export const WHO = [
