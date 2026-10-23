@@ -1,0 +1,65 @@
+import { useEffect, useRef } from 'react';
+import { EVENT } from '../content';
+
+// Scale the wordmark to exactly fill its cell. CSS gives a close 13vw fallback before JS runs.
+function useFitText() {
+  const ref = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    const mark = ref.current;
+    if (!mark) return;
+    const fit = () => {
+      const box = mark.parentElement!;
+      const cs = getComputedStyle(box);
+      const avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      mark.style.fontSize = '100px';
+      const w = mark.getBoundingClientRect().width;
+      if (w > 0) mark.style.fontSize = `${Math.min(230, Math.floor(((100 * avail) / w) * 0.995))}px`;
+    };
+    fit();
+    document.fonts?.ready.then(fit);
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, []);
+  return ref;
+}
+
+export function Hero() {
+  const markRef = useFitText();
+  return (
+    <>
+      <section className="band" aria-label={EVENT.name}>
+        <div className="frame">
+          <div className="mark-cell">
+            <p className="mark" ref={markRef} aria-label="Kota Codes">
+              Kota<span className="sq" aria-hidden="true"></span>Codes
+            </p>
+          </div>
+        </div>
+      </section>
+      <div className="band">
+        <div className="frame cells hero-lower">
+          <div className="pad meta-cell">
+            <p className="meta-row mono">
+              <time dateTime={EVENT.start}>
+                {EVENT.dateLabel} / {EVENT.timeLabel}
+              </time>
+              <span>kota, rajasthan / free entry</span>
+            </p>
+            <p className="slash-big">{EVENT.venue ? `${EVENT.venue}/` : 'venue-coming-soon/'}</p>
+          </div>
+          <div className="intro-cell cells">
+            <div className="pad say">
+              <h1>{EVENT.headline}</h1>
+              <p>{EVENT.description}</p>
+            </div>
+            <div className="pad">
+              <a className="btn" href="#register">
+                How to register <span className="arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

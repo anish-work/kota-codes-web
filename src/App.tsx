@@ -1,0 +1,34 @@
+import { About } from './components/About';
+import { Countdown } from './components/Countdown';
+import { Day } from './components/Day';
+import { Faq } from './components/Faq';
+import { Footer } from './components/Footer';
+import { Header } from './components/Header';
+import { Hero } from './components/Hero';
+import { Register } from './components/Register';
+import { Speakers } from './components/Speakers';
+import { Takeaways } from './components/Takeaways';
+import { Who } from './components/Who';
+
+export function App() {
+  return (
+    <>
+      <a className="skip" href="#top">
+        Skip to content
+      </a>
+      <Countdown />
+      <Header />
+      <main id="top">
+        <Hero />
+        <About />
+        <Who />
+        <Day />
+        <Takeaways />
+        <Speakers />
+        <Faq />
+        <Register />
+      </main>
+      <Footer />
+    </>
+  );
+}
