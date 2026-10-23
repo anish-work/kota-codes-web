@@ -102,7 +102,7 @@ function Details() {
 const OUTCOME: Record<string, { title: string; body: string; group: boolean }> = {
   registered: {
     title: 'You’re in.',
-    body: 'Your seat is saved. We’ve sent the details to your email too. Chai, snacks and lunch are on us.',
+    body: 'Your seat is saved. We’ve sent the details to your email too. Snacks and coffee are on us.',
     group: true,
   },
   duplicate: {

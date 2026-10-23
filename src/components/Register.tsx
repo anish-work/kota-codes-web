@@ -16,7 +16,7 @@ export function Register() {
           </div>
           <div className="pad right">
             <p>
-              Entry is free, and chai, snacks and lunch are on us. Seats are limited, so tell us you’re coming. It takes
+              Entry is free, and snacks and coffee are on us. Seats are limited, so tell us you’re coming. It takes
               about two minutes.
             </p>
             <p className="small">

@@ -22,7 +22,7 @@ export function Day() {
               around Diwali
             </p>
             <p className="mono">date and time to be announced</p>
-            <p>A three-hour morning, from chai to lunch. The plan below may shift a little once the date is fixed.</p>
+            <p>A three-hour morning, with snacks and coffee. The plan below may shift a little once the date is fixed.</p>
           </div>
           <div>
             {SCHEDULE.map(({ part, slots }) => (

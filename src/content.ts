@@ -40,7 +40,7 @@ export const SCHEDULE: { part: string; slots: Slot[] }[] = [
   {
     part: 'The morning',
     slots: [
-      { time: '10:30 am', title: 'Arrive, have chai and say hello', note: 'Pick up your name tag and meet the people around you.' },
+      { time: '10:30 am', title: 'Arrive, grab a coffee and say hello', note: 'Pick up your name tag and meet the people around you.' },
       { time: '10:45 am', title: 'Welcome', note: 'Who we are, and why Kota needs a place for people who love tech.' },
       { time: '10:55 am', title: 'AI: myth or fact?', note: 'A fun game about things people fear about AI, like “Will it take my job?” You vote, then live demos show the answer.' },
       { time: '11:10 am', title: 'Talk by Dev', note: 'CTO at Gooey.AI. Topic to be announced.' },
@@ -54,7 +54,7 @@ export const SCHEDULE: { part: string; slots: Slot[] }[] = [
       { time: '11:55 am', title: 'Try AI yourself', note: 'A guided session on your phone or laptop. Complete beginners and people who already code sit in separate groups, with helpers at every table.' },
       { time: '12:35 pm', title: 'Kota stories', note: 'People from Kota share how they use technology in their study, work or business.', pix: 'bell' },
       { time: '12:50 pm', title: 'Join the community', note: 'How to stay in touch and hear about the next meetups.' },
-      { time: '1:00 pm', title: 'Lunch and chat', note: 'Eat, talk and make some new friends.' },
+      { time: '1:00 pm', title: 'Snacks and chat', note: 'Have a bite, talk and make some new friends.' },
       { time: '1:30 pm', title: 'Wrap up' },
     ],
   },
@@ -73,7 +73,7 @@ export const SPEAKERS = [
 ];
 
 export const FAQ = [
-  { q: 'Is it really free?', a: 'Yes. Entry is free, and chai, snacks and lunch are on us. We only ask you to register so we know how many people are coming.' },
+  { q: 'Is it really free?', a: 'Yes. Entry is free, and snacks and coffee are on us. We only ask you to register so we know how many people are coming.' },
   { q: 'I don’t know anything about coding. Can I still come?', a: 'Yes, please do. Most of the morning is for people who are new to AI and tech. Everything is explained simply, and you can ask anything.' },
   { q: 'What should I bring?', a: 'Your phone is enough. If you have a laptop, bring it along with a charger.' },
   { q: 'Can school students come?', a: 'Yes, from Class 9 upwards, with a parent’s permission. Parents are welcome to come too.' },
