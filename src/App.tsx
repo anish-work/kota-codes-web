@@ -22,10 +22,10 @@ export function App() {
       <main id="top">
         <Hero />
         <About />
+        <Speakers />
         <Who />
         <Day />
         <Takeaways />
-        <Speakers />
         <Faq />
         <Register />
       </main>

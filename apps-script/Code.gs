@@ -18,8 +18,8 @@ const SHEET_NAME = 'Registrations';
 // Shown in confirmation emails. Keep in sync with src/config.ts on the website.
 const EVENT = {
   name: 'Kota Codes Meetup #01',
-  date: 'Sunday, 1 November 2026',
-  time: '10:30 am – 1:30 pm',
+  date: 'Coming soon, around Diwali',
+  time: 'To be announced. We’ll email you as soon as it’s fixed.',
   venue: 'In Kota, to be announced. We’ll email you and post it on Instagram (@kota.codes).',
   mapsUrl: '',
   whatToBring: 'Your phone. A laptop and charger if you have one.',
@@ -193,7 +193,7 @@ function sendConfirmation(v, status) {
     body = [
       'Hi ' + first + ',',
       '',
-      'Your seat at ' + EVENT.name + ' is saved. Entry is free, and chai, snacks and lunch are on us.',
+      'Your seat at ' + EVENT.name + ' is saved. Entry is free, and snacks and coffee are on us.',
       '',
       details,
       '',

@@ -2,11 +2,11 @@ import { EVENT, SCHEDULE } from '../content';
 import { Pixel } from './Pixel';
 import { SectionHead } from './SectionHead';
 
-// "10:55 am" -> "2026-11-01T10:55:00+05:30", so each slot carries a machine-readable time.
+// "10:55 am" -> "10:55" (or "2026-11-08T10:55:00+05:30" once the date is set), a machine-readable time.
 function toIso(label: string) {
   const [, h, m, ap] = label.match(/(\d+):(\d+)\s*(am|pm)/i)!;
-  const hour = (Number(h) % 12) + (ap.toLowerCase() === 'pm' ? 12 : 0);
-  return `${EVENT.start.slice(0, 10)}T${String(hour).padStart(2, '0')}:${m}:00+05:30`;
+  const hhmm = `${String((Number(h) % 12) + (ap.toLowerCase() === 'pm' ? 12 : 0)).padStart(2, '0')}:${m}`;
+  return EVENT.start ? `${EVENT.start.slice(0, 10)}T${hhmm}:00+05:30` : hhmm;
 }
 
 export function Day() {
@@ -17,11 +17,12 @@ export function Day() {
         <div className="frame cells day">
           <div className="pad side">
             <p className="when">
-              Sunday,
-              <br />1 November
+              Coming soon,
+              <br />
+              around Diwali
             </p>
-            <p className="mono">{EVENT.timeLabel}</p>
-            <p>Three hours, from chai to lunch. Times may shift by a few minutes on the day.</p>
+            <p className="mono">date and time to be announced</p>
+            <p>A three-hour morning, with snacks and coffee. The plan below may shift a little once the date is fixed.</p>
           </div>
           <div>
             {SCHEDULE.map(({ part, slots }) => (

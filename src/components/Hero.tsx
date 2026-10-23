@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { EVENT } from '../content';
+import { Pixel } from './Pixel';
 
 // Scale the headline so its longest line exactly fills the cell. CSS gives a close vw fallback before JS runs.
 function useFitText() {
@@ -34,15 +35,19 @@ export function Hero() {
               <span>Kota’s first</span> <span>AI &amp; tech meetup<span className="sq" aria-hidden="true"></span></span>
             </h1>
           </div>
+          <div className="hero-sky">
+            <div className="sky-track">
+              <Pixel name="skyline" />
+              <Pixel name="skyline" className="sky-loop" />
+            </div>
+          </div>
         </div>
       </section>
       <div className="band">
         <div className="frame cells hero-lower">
           <div className="pad meta-cell">
             <p className="meta-row mono">
-              <time dateTime={EVENT.start}>
-                {EVENT.dateLabel} / {EVENT.timeLabel}
-              </time>
+              <span>{EVENT.when}</span>
               <span>kota, rajasthan / free entry</span>
             </p>
             <p className="slash-big">{EVENT.venue ? `${EVENT.venue}/` : 'venue-coming-soon/'}</p>

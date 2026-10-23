@@ -9,14 +9,14 @@ export function Register() {
         <div className="frame cells seat">
           <div className="pad left">
             <p className="mono meta-tail">
-              {EVENT.dateLabel} / {EVENT.timeLabel} / kota
+              {EVENT.when} / kota
             </p>
             <h2 id="register-h">save-your-seat/</h2>
             <Pixel name="palace" />
           </div>
           <div className="pad right">
             <p>
-              Entry is free, and chai, snacks and lunch are on us. Seats are limited, so tell us you’re coming. It takes
+              Entry is free, and snacks and coffee are on us. Seats are limited, so tell us you’re coming. It takes
               about two minutes.
             </p>
             <p className="small">
