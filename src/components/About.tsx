@@ -1,21 +1,28 @@
-import { SWATCH_SIZE, SWATCH_SVG } from '../weave';
 import { WeaveMark } from './Logo';
 import { SectionHead } from './SectionHead';
 
-// A swatch of Kota Doria cloth beside the woven mark.
+const FACTS = [
+  ['#01', 'the first meetup in kota'],
+  ['free', 'entry, snacks and coffee'],
+  ['0', 'coding needed'],
+];
+
+// The woven mark with where it comes from, beside the meetup in three numbers.
 function Mosaic() {
   return (
     <div className="mosaic">
-      <svg
-        className="lg"
-        viewBox={`0 0 ${SWATCH_SIZE} ${SWATCH_SIZE}`}
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden="true"
-        dangerouslySetInnerHTML={{ __html: SWATCH_SVG }}
-      />
-      <div className="mosaic-mark">
+      <figure className="mosaic-mark">
         <WeaveMark label="The Kota Codes mark: a K woven into Kota Doria checks" />
-      </div>
+        <figcaption>a k woven into kota doria checks, the light cloth woven in kaithoon, next to kota.</figcaption>
+      </figure>
+      <dl className="facts">
+        {FACTS.map(([n, label]) => (
+          <div key={n}>
+            <dt>{n}</dt>
+            <dd>{label}</dd>
+          </div>
+        ))}
+      </dl>
     </div>
   );
 }
