@@ -136,6 +136,13 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .mark > span { display: block; }
 .mark .sq { display: inline-block; width: 0.2em; height: 0.2em; background: var(--green); margin: 0 0.04em 0 0.06em; vertical-align: 0; }
 @media (max-width: 640px) { .mark-cell { padding: 18px 20px 14px; } }
+/* Kota skyline under the headline, like the bottom of the Instagram posts. Sized from the frame's own width:
+   the next whole scale that covers it, cropped to centre. */
+.hero-sky { container-type: inline-size; display: flex; justify-content: center; overflow: hidden; padding-top: 28px; }
+.hero-sky .pix { --k: 2; }
+@container (min-width: 540px) { .hero-sky .pix { --k: 3; } }
+@container (min-width: 810px) { .hero-sky .pix { --k: 4; } }
+@container (min-width: 1080px) { .hero-sky .pix { --k: 5; } }
 
 .hero-lower { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) { .hero-lower { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }

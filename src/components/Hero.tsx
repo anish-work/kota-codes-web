@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { EVENT } from '../content';
+import { Pixel } from './Pixel';
 
 // Scale the headline so its longest line exactly fills the cell. CSS gives a close vw fallback before JS runs.
 function useFitText() {
@@ -33,6 +34,9 @@ export function Hero() {
             <h1 className="mark" ref={markRef}>
               <span>Kota’s first</span> <span>AI &amp; tech meetup<span className="sq" aria-hidden="true"></span></span>
             </h1>
+          </div>
+          <div className="hero-sky">
+            <Pixel name="skyline" />
           </div>
         </div>
       </section>
