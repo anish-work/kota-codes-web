@@ -13,7 +13,7 @@ function Mosaic() {
     <div className="mosaic">
       <figure className="mosaic-mark">
         <WeaveMark label="The Kota Codes mark: a K woven into Kota Doria checks" />
-        <figcaption>a k woven into kota doria checks, the light cloth woven in kaithoon, next to kota.</figcaption>
+        <figcaption>A “k” woven in kota doria checks, the light cloth woven in kaithoon, next to kota.</figcaption>
       </figure>
       <dl className="facts">
         {FACTS.map(([n, label]) => (
