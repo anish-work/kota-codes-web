@@ -32,7 +32,7 @@ export function About() {
               they know about technology. Kota Codes is a new community to change that.
             </p>
             <p>
-              This is our very first meetup. It should feel like a relaxed Sunday with chai, good conversations and a few
+              This is our very first meetup. It should feel like a relaxed morning with chai, good conversations and a few
               “oh, so that’s how it works” moments.
             </p>
           </div>

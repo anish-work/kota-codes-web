@@ -14,10 +14,12 @@ export const EVENT = {
   name: 'Kota Codes Meetup #01',
   description:
     'A free, friendly morning to learn what AI really is, try it yourself, and meet people in Kota who are curious about technology. No coding knowledge needed.',
-  start: '2026-11-01T10:30:00+05:30',
-  end: '2026-11-01T13:30:00+05:30',
-  dateLabel: 'sunday, 1 november',
-  timeLabel: '10:30 am – 1:30 pm',
+  // Date not fixed yet. When it is, set start/end (IST, e.g. '2026-11-08T10:30:00+05:30') and the two
+  // labels below; the countdown and Google's event listing switch on once start is set.
+  start: null as string | null,
+  end: null as string | null,
+  when: 'coming soon, around diwali', // lowercase mono labels
+  whenText: 'Coming soon, around Diwali', // in sentences
   city: 'Kota',
   region: 'Rajasthan',
   venue: CONFIG.venue.name || null, // set in src/config.ts

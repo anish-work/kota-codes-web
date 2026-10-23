@@ -44,9 +44,7 @@ export function Hero() {
         <div className="frame cells hero-lower">
           <div className="pad meta-cell">
             <p className="meta-row mono">
-              <time dateTime={EVENT.start}>
-                {EVENT.dateLabel} / {EVENT.timeLabel}
-              </time>
+              <span>{EVENT.when}</span>
               <span>kota, rajasthan / free entry</span>
             </p>
             <p className="slash-big">{EVENT.venue ? `${EVENT.venue}/` : 'venue-coming-soon/'}</p>

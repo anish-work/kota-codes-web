@@ -74,12 +74,8 @@ function Details() {
   return (
     <dl className="details">
       <div>
-        <dt>date</dt>
-        <dd>Sunday, 1 November 2026</dd>
-      </div>
-      <div>
-        <dt>time</dt>
-        <dd>{EVENT.timeLabel}</dd>
+        <dt>when</dt>
+        <dd>{EVENT.whenText}. We’ll email you the date and time.</dd>
       </div>
       <div>
         <dt>venue</dt>

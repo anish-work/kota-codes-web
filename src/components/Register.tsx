@@ -9,7 +9,7 @@ export function Register() {
         <div className="frame cells seat">
           <div className="pad left">
             <p className="mono meta-tail">
-              {EVENT.dateLabel} / {EVENT.timeLabel} / kota
+              {EVENT.when} / kota
             </p>
             <h2 id="register-h">save-your-seat/</h2>
             <Pixel name="palace" />
