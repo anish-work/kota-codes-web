@@ -48,7 +48,7 @@ The Sheets phone app has no Apps Script menu, so use the phone's browser in desk
 2. **Paste the script.** In `Code.gs`, select all, delete, and paste `apps-script/Code.gs` from this repo as is. Nothing in it needs editing; settings come from the Settings tab. Tap Save.
 3. **Deploy.** Deploy > New deployment > gear icon > Web app. Execute as: **Me**. Who has access: **Anyone**. Deploy, then authorise when asked (Google warns the app is unverified because it's yours: Advanced > Go to project (unsafe) > Allow). Copy the web app URL ending in `/exec`.
 4. **Check it.** Open the URL: you should see `{"ok":true,"status":"ready",...}`.
-5. **Connect the page.** Put the URL in `webAppUrl` in `src/config.ts`, plus `whatsappGroupUrl` and the venue to match the Settings tab. Commit and push; Vercel redeploys. (From a phone, the GitHub site's pencil icon on the file works, or send the URL to Claude.)
+5. **Connect the page.** Put the URL in `webAppUrl` in `src/config.ts`, plus `whatsappCommunityUrl` (the WhatsApp community invite link, shown after every signup attempt) and the venue to match the Settings tab. Commit and push; Vercel redeploys. (From a phone, the GitHub site's pencil icon on the file works, or send the URL to Claude.)
 
 **Every change to the script needs a new deployment version**, or the live URL keeps running the old code: Deploy > Manage deployments > pencil icon > Version: New version > Deploy. The URL stays the same. Changes in the Settings tab don't need this.
 

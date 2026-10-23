@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
+import { celebrate } from '../celebrate';
 import { CONFIG } from '../config';
 import { EVENT } from '../content';
 import {
@@ -103,28 +104,34 @@ function Details() {
   );
 }
 
-const OUTCOME: Record<string, { title: string; body: string; group: boolean }> = {
+const OUTCOME: Record<string, { title: string; body: string }> = {
   registered: {
     title: 'You’re in.',
     body: 'Your seat is saved. We’ve sent the details to your email too. Chai, snacks and lunch are on us.',
-    group: true,
   },
   duplicate: {
     title: 'You’re already registered.',
     body: 'We already have a signup with this name and WhatsApp number, so there’s nothing more to do. See you there.',
-    group: true,
   },
   waitlist: {
     title: 'You’re on the waitlist.',
     body: 'All seats are taken for now. If someone drops out, we’ll message you on WhatsApp and email, in the order people signed up.',
-    group: false,
   },
   closed: {
     title: 'Registrations are closed.',
     body: 'We’re not taking new signups for this meetup. Follow us on Instagram, @kota.codes, to hear about the next one.',
-    group: false,
   },
 };
+
+// Shown after every submit, whatever the result, so nobody leaves without a way to stay in touch.
+function JoinCommunity({ className }: { className: string }) {
+  if (!CONFIG.whatsappCommunityUrl) return null;
+  return (
+    <a className={className} href={CONFIG.whatsappCommunityUrl} target="_blank" rel="noopener">
+      Join the WhatsApp community <span className="arrow" aria-hidden="true">→</span>
+    </a>
+  );
+}
 
 function Outcome({ result }: { result: Result }) {
   const ref = useRef<HTMLHeadingElement>(null);
@@ -133,7 +140,8 @@ function Outcome({ result }: { result: Result }) {
   useEffect(() => {
     ref.current?.focus({ preventScroll: true });
     ref.current?.closest('.band')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
+    if (result.status === 'registered') return celebrate();
+  }, [result.status]);
 
   return (
     <div className="frame cells done" role="status">
@@ -145,11 +153,7 @@ function Outcome({ result }: { result: Result }) {
       </div>
       <div className="pad done-side">
         <Details />
-        {o.group && CONFIG.whatsappGroupUrl && (
-          <a className="btn" href={CONFIG.whatsappGroupUrl} target="_blank" rel="noopener">
-            Join the WhatsApp group <span className="arrow" aria-hidden="true">→</span>
-          </a>
-        )}
+        <JoinCommunity className="btn" />
       </div>
     </div>
   );
@@ -287,9 +291,12 @@ export function RegisterForm() {
         {phase.kind === 'failed' ? (
           <div className="failed" role="alert">
             <p>{phase.message}</p>
-            <button type="button" className="ghost" onClick={send}>
-              Try again
-            </button>
+            <div className="actions">
+              <button type="button" className="ghost" onClick={send}>
+                Try again
+              </button>
+              <JoinCommunity className="ghost" />
+            </div>
           </div>
         ) : (
           <p className="hint">

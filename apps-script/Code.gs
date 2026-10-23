@@ -28,7 +28,7 @@ const DEFAULTS = {
   'Venue': '',
   'Venue address': '',
   'Map link': '',
-  'WhatsApp group link': '',
+  'WhatsApp group link': '', // the community invite link
   'What to bring': 'Your phone. A laptop and charger if you have one.',
   'Send confirmation emails': 'Yes',
 };
@@ -252,7 +252,7 @@ function sendConfirmation(v, status, s) {
       details,
       '',
       s['WhatsApp group link']
-        ? 'Join the WhatsApp group for updates: ' + s['WhatsApp group link']
+        ? 'Join the Kota Codes WhatsApp community for updates: ' + s['WhatsApp group link']
         : 'We’ll share updates on Instagram: ' + INSTAGRAM,
       '',
       'If you can’t come any more, just reply to this email so someone on the waitlist can take your seat.',
