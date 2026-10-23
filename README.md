@@ -17,7 +17,9 @@ Deployed on Vercel: `vercel.json` sets the build (`npm run build` -> `dist/`) an
 - `src/seo.ts`: JSON-LD (Organization, Event, FAQPage) for Google rich results.
 - `index.html`: title, description, canonical, Open Graph and Twitter tags.
 - `scripts/prerender.js`: renders the app to HTML at build time and writes `sitemap.xml`.
-- `public/`: favicon, `og-image.png` (1200×630 share image), `robots.txt`.
+- `src/weave.ts`: the Kota Doria weave (logo mark, cloth swatch, woven border), built from the brand board's proportions. The favicon is generated from it at build time.
+- `src/illustrations/`: "Kota in pixels" SVGs from the graphics artifact, rendered by `src/components/Pixel.tsx` at whole-number scales.
+- `public/`: `og-image.png` (1200×630 share image), `apple-touch-icon.png`, `robots.txt`.
 
 When the venue is announced, set `EVENT.venue` in `src/content.ts`.
 If the site moves off `https://kota.codes`, update `SITE.url`, `index.html` and `public/robots.txt`.

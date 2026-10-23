@@ -1,11 +1,14 @@
 import { SITE } from '../content';
+import { Lockup } from './Logo';
 
 export function Footer() {
   return (
     <>
       <footer className="band">
         <div className="frame cells foot">
-          <div>kota.codes</div>
+          <div>
+            <Lockup />
+          </div>
           <div>learn tech. meet people.</div>
           <div>made in kota</div>
           <div>

@@ -2,7 +2,7 @@
   "name": "Kota Codes",
   "short_name": "Kota Codes",
   "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }],
-  "theme_color": "#0A0D0B",
-  "background_color": "#EBECE8",
+  "theme_color": "#111311",
+  "background_color": "#F2EEE5",
   "display": "standalone"
 }

@@ -1,4 +1,5 @@
 import { EVENT, SITE } from '../content';
+import { Pixel } from './Pixel';
 import { RegisterForm } from './RegisterForm';
 
 export function Register() {
@@ -11,6 +12,7 @@ export function Register() {
               {EVENT.dateLabel} / {EVENT.timeLabel} / kota
             </p>
             <h2 id="register-h">save-your-seat/</h2>
+            <Pixel name="palace" />
           </div>
           <div className="pad right">
             <p>

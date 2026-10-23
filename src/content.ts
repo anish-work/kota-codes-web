@@ -32,7 +32,7 @@ export const WHO = [
   { title: 'Anyone curious', note: 'If you’ve ever wondered how AI works, come' },
 ];
 
-export type Slot = { time: string; title: string; note?: string };
+export type Slot = { time: string; title: string; note?: string; pix?: 'bell' };
 
 export const SCHEDULE: { part: string; slots: Slot[] }[] = [
   {
@@ -50,7 +50,7 @@ export const SCHEDULE: { part: string; slots: Slot[] }[] = [
     part: 'After the break',
     slots: [
       { time: '11:55 am', title: 'Try AI yourself', note: 'A guided session on your phone or laptop. Complete beginners and people who already code sit in separate groups, with helpers at every table.' },
-      { time: '12:35 pm', title: 'Kota stories', note: 'People from Kota share how they use technology in their study, work or business.' },
+      { time: '12:35 pm', title: 'Kota stories', note: 'People from Kota share how they use technology in their study, work or business.', pix: 'bell' },
       { time: '12:50 pm', title: 'Join the community', note: 'How to stay in touch and hear about the next meetups.' },
       { time: '1:00 pm', title: 'Lunch and chat', note: 'Eat, talk and make some new friends.' },
       { time: '1:30 pm', title: 'Wrap up' },

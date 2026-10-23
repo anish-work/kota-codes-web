@@ -5,6 +5,7 @@ import { Faq } from './components/Faq';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
+import { PageEdge } from './components/Pixel';
 import { Register } from './components/Register';
 import { Speakers } from './components/Speakers';
 import { Takeaways } from './components/Takeaways';
@@ -28,6 +29,7 @@ export function App() {
         <Faq />
         <Register />
       </main>
+      <PageEdge />
       <Footer />
     </>
   );
