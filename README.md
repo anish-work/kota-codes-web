@@ -9,7 +9,7 @@ npm run build    # typecheck, client build, SSR build, prerender -> dist/
 npm run preview  # serve dist/
 ```
 
-Deploy `dist/` to any static host (Netlify, Vercel, Cloudflare Pages, GitHub Pages).
+Deployed on Vercel: `vercel.json` sets the build (`npm run build` -> `dist/`) and cache headers. Every push to `main` deploys to production; other branches get preview URLs.
 
 ## Where things live
 
