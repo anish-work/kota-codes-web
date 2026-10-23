@@ -23,6 +23,14 @@ export const EVENT = {
   venue: CONFIG.venue.name || null, // set in src/config.ts
 };
 
+// Head tags for /register. The home page uses the ones written in index.html.
+export const REGISTER_PAGE = {
+  path: '/register',
+  title: 'Register for Kota Codes Meetup #01 · Free AI & Tech Meetup in Kota',
+  description:
+    'Save your free seat at Kota’s first AI & tech meetup: Sunday 1 November, 10:30 am – 1:30 pm. Chai and lunch included, no coding needed. It takes about two minutes.',
+};
+
 export const WHO = [
   { title: 'College students', note: 'Any course, any year' },
   { title: 'School students', note: 'Class 9 to 12, with a parent’s permission' },

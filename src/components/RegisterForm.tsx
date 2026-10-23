@@ -119,6 +119,11 @@ const OUTCOME: Record<string, { title: string; body: string; group: boolean }> =
     body: 'All seats are taken for now. If someone drops out, we’ll message you on WhatsApp and email, in the order people signed up.',
     group: false,
   },
+  closed: {
+    title: 'Registrations are closed.',
+    body: 'We’re not taking new signups for this meetup. Follow us on Instagram, @kota.codes, to hear about the next one.',
+    group: false,
+  },
 };
 
 function Outcome({ result }: { result: Result }) {
@@ -174,7 +179,8 @@ export function RegisterForm() {
     setPhase({ kind: 'sending' });
     try {
       const result = await submit(v);
-      if (result.ok) setPhase({ kind: 'done', result });
+      // "closed" means the Settings tab says Registrations open: No. Show it as an outcome, not an error to retry.
+      if (result.ok || result.status === 'closed') setPhase({ kind: 'done', result });
       else setPhase({ kind: 'failed', message: result.message || 'Something went wrong on our side. Please try again.' });
     } catch {
       setPhase({

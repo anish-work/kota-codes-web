@@ -225,7 +225,7 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 @media (min-width: 900px) { .seat { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
 .seat .left { display: flex; flex-direction: column; gap: 40px; padding-top: 40px; }
 .meta-tail { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.seat h2 { font-size: clamp(38px, 6vw, 80px); line-height: 1; letter-spacing: -0.04em; }
+.seat h1, .seat h2 { font-size: clamp(38px, 6vw, 80px); line-height: 1; letter-spacing: -0.04em; }
 .seat .right { display: flex; flex-direction: column; gap: 16px; justify-content: flex-end; }
 .seat .right p { font-size: 19px; max-width: 32em; }
 .seat .right p.small { color: var(--muted); font-size: 16px; }

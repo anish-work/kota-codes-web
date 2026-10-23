@@ -73,7 +73,7 @@ export function validate(v: FormValues): Errors {
   return e;
 }
 
-export type Result = { ok: boolean; status: 'registered' | 'waitlist' | 'duplicate' | string; message: string };
+export type Result = { ok: boolean; status: 'registered' | 'waitlist' | 'duplicate' | 'closed' | string; message: string };
 
 // Plain-text JSON body and no custom headers, so the browser sends a "simple" request with no CORS preflight.
 export async function submit(v: FormValues): Promise<Result> {

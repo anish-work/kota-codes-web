@@ -2,7 +2,9 @@ import { EVENT, SITE } from '../content';
 import { Pixel } from './Pixel';
 import { RegisterForm } from './RegisterForm';
 
-export function Register() {
+// The save-your-seat section. On the home page it links to /register; on /register it holds the form.
+export function Register({ form = false }: { form?: boolean }) {
+  const Heading = form ? 'h1' : 'h2';
   return (
     <section id="register" aria-labelledby="register-h">
       <div className="band">
@@ -11,7 +13,7 @@ export function Register() {
             <p className="mono meta-tail">
               {EVENT.dateLabel} / {EVENT.timeLabel} / kota
             </p>
-            <h2 id="register-h">save-your-seat/</h2>
+            <Heading id="register-h">save-your-seat/</Heading>
             <Pixel name="palace" />
           </div>
           <div className="pad right">
@@ -19,6 +21,15 @@ export function Register() {
               Entry is free, and chai, snacks and lunch are on us. Seats are limited, so tell us you’re coming. It takes
               about two minutes.
             </p>
+            {form ? (
+              <p className="small">
+                New here? <a href="/">Read about the day, the speakers and the FAQ</a>.
+              </p>
+            ) : (
+              <a className="btn" href="/register">
+                Register now <span className="arrow" aria-hidden="true">→</span>
+              </a>
+            )}
             <p className="small">
               Want to help organise or volunteer on the day? Message us on Instagram:{' '}
               <a className="handle" href={SITE.instagram} target="_blank" rel="noopener">
@@ -28,9 +39,11 @@ export function Register() {
           </div>
         </div>
       </div>
-      <div className="band" id="register-form">
-        <RegisterForm />
-      </div>
+      {form && (
+        <div className="band" id="register-form">
+          <RegisterForm />
+        </div>
+      )}
     </section>
   );
 }

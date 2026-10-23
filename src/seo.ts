@@ -39,7 +39,7 @@ export function structuredData() {
       price: '0',
       priceCurrency: 'INR',
       availability: 'https://schema.org/InStock',
-      url: `${SITE.url}/#register-form`,
+      url: `${SITE.url}/register`,
     },
     organizer: { '@id': `${SITE.url}/#org` },
     performer: SPEAKERS.map((s) => ({
