@@ -6,7 +6,7 @@ export const CONFIG = {
 
   // WhatsApp community invite link (chat.whatsapp.com/…), shown after every signup attempt, even a failed one.
   // While empty, no join button shows. Keep in sync with "WhatsApp group link" in the Sheet's Settings tab.
-  whatsappCommunityUrl: '',
+  whatsappCommunityUrl: 'https://chat.whatsapp.com/CCxRJn22gbCK6CZIX3UQPB',
 
   // Leave name empty until the venue is announced; the page then says "venue to be announced".
   venue: {
