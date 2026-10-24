@@ -77,7 +77,27 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
   .nav { grid-template-columns: minmax(0, 1fr) auto; }
   .nav .link { display: none; }
 }
-.arrow { font-family: var(--mono); font-weight: 500; }
+/* Arrow (components/Arrow.tsx): whole pixels per cell so it stays crisp. "nudge" buttons push it forward every
+   couple of seconds to draw the eye; hovering any button slides it out and back in. */
+.arrow { --cell: 3px; display: inline-flex; flex: none; }
+.arrow svg { display: block; width: calc(10 * var(--cell)); height: calc(8 * var(--cell)); }
+.big .arrow, .reg > .submit .arrow { --cell: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  .nudge .arrow svg { animation: nudge 2.4s ease-in-out infinite; }
+  a:hover .arrow svg, a:focus-visible .arrow svg,
+  button:hover:not(:disabled):not([aria-disabled="true"]) .arrow svg { animation: through 0.5s ease-in-out; }
+}
+@keyframes nudge {
+  0%, 60%, 78%, 92%, 100% { transform: translateX(0); }
+  70% { transform: translateX(8px); }
+  86% { transform: translateX(4px); }
+}
+@keyframes through {
+  0% { transform: translateX(0); opacity: 1; }
+  45% { transform: translateX(24px); opacity: 0; }
+  46% { transform: translateX(-24px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
 
 /* Logo: Kota Doria weave mark + kota.codes wordmark. The mark is 2x the wordmark's cap height (0.73em). */
 .lg .t { fill: var(--logo-thread); }
@@ -157,6 +177,8 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .intro-cell p { font-size: clamp(21px, 2.1vw, 28px); line-height: 1.35; letter-spacing: -0.01em; max-width: 34em; }
 .btn { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 22px; border-radius: 0; background: var(--green); color: var(--on-green); text-decoration: none; font-size: 19px; font-weight: 600; }
 .btn:hover { filter: brightness(1.1); }
+.btn.big { padding: 24px; font-size: 22px; }
+@media (max-width: 640px) { .btn.big { padding: 22px 20px; font-size: 20px; } }
 
 /* Section heading */
 .head { padding: 96px 28px 36px; }
@@ -241,7 +263,7 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 @media (min-width: 900px) { .seat { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
 .seat .left { display: flex; flex-direction: column; gap: 40px; padding-top: 40px; }
 .meta-tail { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.seat h2 { font-size: clamp(38px, 6vw, 80px); line-height: 1; letter-spacing: -0.04em; }
+.seat h1, .seat h2 { font-size: clamp(38px, 6vw, 80px); line-height: 1; letter-spacing: -0.04em; }
 .seat .right { display: flex; flex-direction: column; gap: 16px; justify-content: flex-end; }
 .seat .right p { font-size: 19px; max-width: 32em; }
 .seat .right p.small { color: var(--muted); font-size: 16px; }
@@ -293,9 +315,15 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .ghost { padding: 12px 18px; border: 1px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink); font: 600 17px var(--sans); cursor: pointer; }
 .ghost:hover { background: var(--cell); }
 .ghost:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+.failed .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+a.ghost { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
 .reg > .submit { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 96px; padding: 28px; border: 0; border-radius: 0;
   background: var(--green); color: var(--on-green); font: 600 22px var(--sans); letter-spacing: -0.01em; text-align: left; cursor: pointer; }
-.reg > .submit:hover:not(:disabled) { filter: brightness(1.1); }
+.reg > .submit { transition: background-color 0.25s, color 0.25s; }
+.reg > .submit:hover:not(:disabled):not([aria-disabled="true"]) { filter: brightness(1.1); }
+/* Greyed out until every required answer is in. Still tappable: a tap jumps to what's missing. */
+.reg > .submit[aria-disabled="true"] { background: var(--cell); color: var(--muted); cursor: not-allowed; }
+.reg > .submit[aria-disabled="true"]:focus-visible { outline-color: var(--ink); }
 .reg > .submit:disabled { cursor: progress; opacity: 0.75; }
 .reg > .submit:focus-visible { outline: 3px solid var(--on-green); outline-offset: -8px; }
 @media (max-width: 640px) { .reg > .submit { padding: 22px 20px; min-height: 76px; font-size: 20px; } }
@@ -312,6 +340,18 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .details > div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
 .details dt { font-family: var(--mono); font-size: 14px; line-height: 1.9; color: var(--muted); text-transform: lowercase; }
 .details dd { margin: 0; font-size: 18px; }
+
+/* Celebration after a successful signup (src/celebrate.ts): confetti canvas over the page, and #root shakes under it */
+.celebrate { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+body.shaking { overflow-x: clip; }
+body.shaking > #root { animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+@keyframes shake {
+  10%, 90% { transform: translate(-2px, 1px) rotate(-0.2deg); }
+  20%, 80% { transform: translate(5px, -2px) rotate(0.4deg); }
+  30%, 50%, 70% { transform: translate(-9px, 3px) rotate(-0.6deg); }
+  40%, 60% { transform: translate(9px, -3px) rotate(0.6deg); }
+}
+@media (prefers-reduced-motion: reduce) { body.shaking > #root { animation: none; } }
 
 /* Footer */
 footer.band { border-top: 0; }

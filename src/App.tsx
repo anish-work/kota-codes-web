@@ -11,23 +11,34 @@ import { Speakers } from './components/Speakers';
 import { Takeaways } from './components/Takeaways';
 import { Who } from './components/Who';
 
-export function App() {
+export type Page = 'home' | 'register';
+
+// "/register" (with or without a trailing slash) is the registration page; every other path is the home page.
+export const pageFor = (path: string): Page => (/^\/register\/?$/.test(path) ? 'register' : 'home');
+
+export function App({ page }: { page: Page }) {
   return (
     <>
       <a className="skip" href="#top">
         Skip to content
       </a>
       <Countdown />
-      <Header />
+      <Header page={page} />
       <main id="top">
-        <Hero />
-        <About />
-        <Speakers />
-        <Who />
-        <Day />
-        <Takeaways />
-        <Faq />
-        <Register />
+        {page === 'register' ? (
+          <Register form />
+        ) : (
+          <>
+            <Hero />
+            <About />
+            <Speakers />
+            <Who />
+            <Day />
+            <Takeaways />
+            <Faq />
+            <Register />
+          </>
+        )}
       </main>
       <PageEdge />
       <Footer />

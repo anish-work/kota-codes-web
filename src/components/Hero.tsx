@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { EVENT } from '../content';
+import { Arrow } from './Arrow';
 import { Pixel } from './Pixel';
 
 // Scale the headline so its longest line exactly fills the cell. CSS gives a close vw fallback before JS runs.
@@ -57,8 +58,8 @@ export function Hero() {
               <p>{EVENT.description}</p>
             </div>
             <div className="pad">
-              <a className="btn" href="#register-form">
-                Save your seat <span className="arrow" aria-hidden="true">→</span>
+              <a className="btn big nudge" href="/register">
+                Save your seat <Arrow />
               </a>
             </div>
           </div>

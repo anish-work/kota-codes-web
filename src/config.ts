@@ -2,10 +2,11 @@
 export const CONFIG = {
   // Google Apps Script web app URL (Deploy > Manage deployments > Web app URL, ends in /exec).
   // While empty, the form shows an error instead of sending.
-  webAppUrl: '',
+  webAppUrl: 'https://script.google.com/macros/s/AKfycby2XhhUtQxSwkx-8vPEtnl2N4JJ-enncAJ_TFInHUXNSF7mmfsvQx4pjKed-iE-O8NZ/exec',
 
-  // WhatsApp group invite link, shown after someone registers. Keep in sync with Code.gs.
-  whatsappGroupUrl: '',
+  // WhatsApp community invite link (chat.whatsapp.com/…), shown after every signup attempt, even a failed one.
+  // While empty, no join button shows. Keep in sync with "WhatsApp group link" in the Sheet's Settings tab.
+  whatsappCommunityUrl: 'https://chat.whatsapp.com/CCxRJn22gbCK6CZIX3UQPB',
 
   // Leave name empty until the venue is announced; the page then says "venue to be announced".
   venue: {
