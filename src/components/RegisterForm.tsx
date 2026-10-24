@@ -88,12 +88,8 @@ function Details() {
   return (
     <dl className="details">
       <div>
-        <dt>date</dt>
-        <dd>Sunday, 1 November 2026</dd>
-      </div>
-      <div>
-        <dt>time</dt>
-        <dd>{EVENT.timeLabel}</dd>
+        <dt>when</dt>
+        <dd>{EVENT.whenText}. We’ll email you the date and time.</dd>
       </div>
       <div>
         <dt>venue</dt>
@@ -120,7 +116,7 @@ function Details() {
 const OUTCOME: Record<string, { title: string; body: string }> = {
   registered: {
     title: 'You’re in.',
-    body: 'Your seat is saved. We’ve sent the details to your email too. Coffee and snacks are on us.',
+    body: 'Your seat is saved. We’ve sent the details to your email too. Snacks and coffee are on us.',
   },
   duplicate: {
     title: 'You’re already registered.',

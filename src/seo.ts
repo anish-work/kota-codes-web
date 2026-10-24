@@ -12,7 +12,7 @@ export function structuredData() {
     sameAs: [SITE.instagram],
   };
 
-  const event = {
+  const event = EVENT.start && {
     '@type': 'Event',
     name: EVENT.name,
     description: EVENT.description,
@@ -59,5 +59,6 @@ export function structuredData() {
     })),
   };
 
-  return { '@context': 'https://schema.org', '@graph': [organization, event, faq] };
+  // Google's event listing needs a start date, so the Event is left out until the date is fixed.
+  return { '@context': 'https://schema.org', '@graph': [organization, ...(event ? [event] : []), faq] };
 }

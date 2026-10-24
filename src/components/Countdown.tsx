@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 import { EVENT } from '../content';
 
-const START = Date.parse(EVENT.start);
-const END = Date.parse(EVENT.end);
 const two = (n: number) => String(n).padStart(2, '0');
 
-function read(now: number) {
-  const ms = START - now;
+function read(now: number, start: number, end: number) {
+  const ms = start - now;
   if (ms <= 0) {
-    return { label: now < END ? 'happening-now/' : 'thanks-for-coming/', value: 'see you at the next one' };
+    return { label: now < end ? 'happening-now/' : 'thanks-for-coming/', value: 'see you at the next one' };
   }
   const s = Math.floor(ms / 1000);
   return {
@@ -17,25 +15,38 @@ function read(now: number) {
   };
 }
 
-// Prerendered with a placeholder so server and client markup match; ticks after hydration.
-export function Countdown() {
-  const [state, setState] = useState<ReturnType<typeof read> | null>(null);
-
-  useEffect(() => {
-    const tick = () => setState(read(Date.now()));
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
-
+function Bar({ label, value }: { label: string; value: string }) {
   return (
     <div className="bar">
       <div className="in">
-        <span>{state?.label ?? 'meetup-starts-in/'}</span>
+        <span>{label}</span>
         <span className="num" role="timer" aria-live="off">
-          {state?.value ?? '--  :  --  :  --  :  --'}
+          {value}
         </span>
       </div>
     </div>
   );
+}
+
+// Until the date is fixed, the bar just says when to expect it.
+export function Countdown() {
+  return EVENT.start && EVENT.end ? (
+    <Ticking start={Date.parse(EVENT.start)} end={Date.parse(EVENT.end)} />
+  ) : (
+    <Bar label="meetup-date/" value={EVENT.when} />
+  );
+}
+
+// Prerendered with a placeholder so server and client markup match; ticks after hydration.
+function Ticking({ start, end }: { start: number; end: number }) {
+  const [state, setState] = useState<ReturnType<typeof read> | null>(null);
+
+  useEffect(() => {
+    const tick = () => setState(read(Date.now(), start, end));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [start, end]);
+
+  return <Bar label={state?.label ?? 'meetup-starts-in/'} value={state?.value ?? '--  :  --  :  --  :  --'} />;
 }

@@ -5,8 +5,8 @@ import { Lockup } from './Logo';
 // Root-relative, so they work from /register too. On the home page they only scroll.
 const LINKS = [
   ['/#about', 'About'],
-  ['/#day', 'The day'],
   ['/#speakers', 'Speakers'],
+  ['/#day', 'The day'],
   ['/#faq', 'FAQ'],
 ];
 

@@ -23,8 +23,8 @@ const INSTAGRAM = 'https://www.instagram.com/kota.codes/';
 const DEFAULTS = {
   'Registrations open': 'Yes',
   'Max seats': '', // blank: no limit
-  'Event date': 'Sunday, 1 November 2026',
-  'Event time': '10:30 am – 1:30 pm',
+  'Event date': 'Coming soon, around Diwali',
+  'Event time': 'To be announced. We’ll email you as soon as it’s fixed.',
   'Venue': '',
   'Venue address': '',
   'Map link': '',
@@ -247,7 +247,7 @@ function sendConfirmation(v, status, s) {
     body = [
       'Hi ' + first + ',',
       '',
-      'Your seat at ' + EVENT_NAME + ' is saved. Entry is free, and coffee and snacks are on us.',
+      'Your seat at ' + EVENT_NAME + ' is saved. Entry is free, and snacks and coffee are on us.',
       '',
       details,
       '',

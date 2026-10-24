@@ -31,10 +31,10 @@ export function App({ page }: { page: Page }) {
           <>
             <Hero />
             <About />
+            <Speakers />
             <Who />
             <Day />
             <Takeaways />
-            <Speakers />
             <Faq />
             <Register />
           </>

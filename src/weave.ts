@@ -51,12 +51,6 @@ function markRects(size = MARK_SIZE): Rect[] {
   return clothRects(K, (size - t) / 5, t);
 }
 
-// A swatch of plain Kota Doria cloth at the mark's proportions, green checks sparse like the border.
-const SWATCH = ['X..X....', '........', '....X..X', '........', 'X..X....', '........', '....X..X', '........'];
-const SWATCH_T = MARK_SIZE * 0.042;
-const SWATCH_P = (MARK_SIZE - SWATCH_T) / 5;
-export const SWATCH_SIZE = SWATCH.length * SWATCH_P + SWATCH_T;
-
 // One row of checks between two threads; a tile of 8 checks, green ones repeating G..G.... like the posts.
 export const BORDER = { pitch: 28, thread: 4, tile: 8 };
 export const BORDER_HEIGHT = BORDER.pitch + BORDER.thread;
@@ -80,5 +74,4 @@ export function toSvg(rects: Rect[]) {
 }
 
 export const MARK_SVG = toSvg(markRects());
-export const SWATCH_SVG = toSvg(clothRects(SWATCH, SWATCH_P, SWATCH_T));
 export const BORDER_SVG = toSvg(borderRects());
