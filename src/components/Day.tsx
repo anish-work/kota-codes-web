@@ -21,7 +21,7 @@ export function Day() {
               <br />1 November
             </p>
             <p className="mono">{EVENT.timeLabel}</p>
-            <p>Three hours, from chai to lunch. Times may shift by a few minutes on the day.</p>
+            <p>Three hours, with coffee and snacks. Times may shift by a few minutes on the day.</p>
           </div>
           <div>
             {SCHEDULE.map(({ part, slots }) => (

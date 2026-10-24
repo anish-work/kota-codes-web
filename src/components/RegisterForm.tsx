@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type FocusEvent, type FormEvent, type ReactNode } from 'react';
 import { celebrate } from '../celebrate';
 import { CONFIG } from '../config';
 import { EVENT } from '../content';
+import { Arrow } from './Arrow';
 import {
   AI_EXPERIENCE,
   DESCRIBES,
@@ -21,6 +22,18 @@ type Phase = { kind: 'idle' } | { kind: 'sending' } | { kind: 'failed'; message:
 
 // Order used to move focus to the first field with a problem.
 const ORDER: FieldName[] = ['name', 'whatsapp', 'email', 'describes', 'aiExperience', 'laptop', 'parentPermission', 'photoConsent'];
+
+// How each required answer is named in the "still needed" line above the button.
+const NEEDED: Partial<Record<FieldName, string>> = {
+  name: 'name',
+  whatsapp: 'whatsapp number',
+  email: 'email',
+  describes: 'what describes you',
+  aiExperience: 'ai tools',
+  laptop: 'laptop',
+  parentPermission: 'parent’s permission',
+  photoConsent: 'photo okay',
+};
 
 function Err({ id, msg }: { id: string; msg?: string }) {
   return msg ? (
@@ -107,7 +120,7 @@ function Details() {
 const OUTCOME: Record<string, { title: string; body: string }> = {
   registered: {
     title: 'You’re in.',
-    body: 'Your seat is saved. We’ve sent the details to your email too. Chai, snacks and lunch are on us.',
+    body: 'Your seat is saved. We’ve sent the details to your email too. Coffee and snacks are on us.',
   },
   duplicate: {
     title: 'You’re already registered.',
@@ -128,7 +141,7 @@ function JoinCommunity({ className }: { className: string }) {
   if (!CONFIG.whatsappCommunityUrl) return null;
   return (
     <a className={className} href={CONFIG.whatsappCommunityUrl} target="_blank" rel="noopener">
-      Join the WhatsApp community <span className="arrow" aria-hidden="true">→</span>
+      Join the WhatsApp community <Arrow />
     </a>
   );
 }
@@ -161,23 +174,32 @@ function Outcome({ result }: { result: Result }) {
 
 export function RegisterForm() {
   const [v, setV] = useState<FormValues>(EMPTY);
-  const [errors, setErrors] = useState<Errors>({});
+  const [left, setLeft] = useState<FieldName[]>([]); // text fields the person has typed in and moved on from
   const [tried, setTried] = useState(false);
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
   const formRef = useRef<HTMLFormElement>(null);
 
   const isSchool = v.describes === SCHOOL_STUDENT;
 
+  // Checked on every change. The button stays greyed out until nothing is missing.
+  const found = validate(v);
+  const missing = ORDER.filter((k) => found[k]);
+  // Before the first tap on the button, only flag a typed answer that's wrong, once the person leaves it; never an empty one.
+  const errors: Errors = tried
+    ? found
+    : Object.fromEntries(left.filter((k) => found[k] && String(v[k]).trim()).map((k) => [k, found[k]]));
+
   function update<K extends FieldName>(name: K, value: FormValues[K]) {
-    const next = { ...v, [name]: value };
-    setV(next);
-    // After the first submit attempt, re-check as people fix things so errors clear live.
-    if (tried) setErrors(validate(next));
+    setV({ ...v, [name]: value });
   }
 
   const onText = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     update(e.target.name as FieldName, e.target.value);
   const onCheck = (e: ChangeEvent<HTMLInputElement>) => update(e.target.name as FieldName, e.target.checked);
+  const onLeave = (e: FocusEvent<HTMLInputElement>) => {
+    const name = e.target.name as FieldName;
+    if (!left.includes(name)) setLeft([...left, name]);
+  };
 
   async function send() {
     setPhase({ kind: 'sending' });
@@ -194,16 +216,13 @@ export function RegisterForm() {
     }
   }
 
+  // The greyed-out button still takes a tap: it marks every missing answer and jumps to the first, instead of doing nothing.
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (phase.kind === 'sending') return;
     setTried(true);
-    const found = validate(v);
-    setErrors(found);
-    const first = ORDER.find((k) => found[k]);
-    if (first) {
-      const el = formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`);
-      el?.focus();
+    if (missing.length) {
+      formRef.current?.querySelector<HTMLElement>(`[name="${missing[0]}"]`)?.focus();
       return;
     }
     send();
@@ -218,17 +237,17 @@ export function RegisterForm() {
   return (
     <form ref={formRef} className="frame cells reg" onSubmit={onSubmit} noValidate aria-labelledby="register-h">
       <Field id="f-name" label="Full name" hint="as you’d like it on your name tag" error={errors.name}>
-        <input id="f-name" name="name" autoComplete="name" value={v.name} onChange={onText} maxLength={100}
+        <input id="f-name" name="name" autoComplete="name" value={v.name} onChange={onText} onBlur={onLeave} maxLength={100}
           aria-invalid={!!errors.name} aria-describedby={desc('f-name', true)} />
       </Field>
       <Field id="f-whatsapp" label="WhatsApp number" hint="10 digits, +91 is optional" error={errors.whatsapp}>
         <input id="f-whatsapp" name="whatsapp" type="tel" inputMode="tel" autoComplete="tel" value={v.whatsapp}
-          onChange={onText} maxLength={20} placeholder="98765 43210"
+          onChange={onText} onBlur={onLeave} maxLength={20} placeholder="98765 43210"
           aria-invalid={!!errors.whatsapp} aria-describedby={desc('f-whatsapp', true)} />
       </Field>
       <Field id="f-email" label="Email" hint="we’ll send your confirmation here" error={errors.email}>
         <input id="f-email" name="email" type="email" inputMode="email" autoComplete="email" value={v.email}
-          onChange={onText} maxLength={150} aria-invalid={!!errors.email} aria-describedby={desc('f-email', true)} />
+          onChange={onText} onBlur={onLeave} maxLength={150} aria-invalid={!!errors.email} aria-describedby={desc('f-email', true)} />
       </Field>
 
       <Choice name="describes" legend="Which describes you best?" options={DESCRIBES} value={v.describes}
@@ -299,16 +318,19 @@ export function RegisterForm() {
             </div>
           </div>
         ) : (
-          <p className="hint">
-            {tried && Object.keys(errors).length
-              ? 'a few answers need a look. they’re marked above.'
-              : 'free entry. we only use your details to run kota codes events.'}
+          <p className="hint" id="submit-hint">
+            {!missing.length
+              ? 'all set. free entry, and we only use your details to run kota codes events.'
+              : tried
+                ? 'a few answers need a look. they’re marked above.'
+                : `still needed: ${missing.map((k) => NEEDED[k]).join(', ')}`}
           </p>
         )}
       </div>
-      <button type="submit" className="submit" disabled={sending} aria-busy={sending}>
+      <button type="submit" className="submit" disabled={sending} aria-busy={sending}
+        aria-disabled={missing.length > 0 || undefined} aria-describedby={phase.kind === 'failed' ? undefined : 'submit-hint'}>
         <span>{sending ? 'Saving your seat…' : 'Save my seat'}</span>
-        <span className="arrow" aria-hidden="true">→</span>
+        <Arrow />
       </button>
     </form>
   );

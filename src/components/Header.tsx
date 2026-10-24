@@ -1,4 +1,5 @@
 import type { Page } from '../App';
+import { Arrow } from './Arrow';
 import { Lockup } from './Logo';
 
 // Root-relative, so they work from /register too. On the home page they only scroll.
@@ -22,8 +23,8 @@ export function Header({ page }: { page: Page }) {
             {label}
           </a>
         ))}
-        <a className="cta" href={home ? '/register' : '#register-form'}>
-          Save your seat <span className="arrow" aria-hidden="true">→</span>
+        <a className="cta nudge" href={home ? '/register' : '#register-form'}>
+          Save your seat <Arrow />
         </a>
       </nav>
     </header>

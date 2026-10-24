@@ -77,7 +77,27 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
   .nav { grid-template-columns: minmax(0, 1fr) auto; }
   .nav .link { display: none; }
 }
-.arrow { font-family: var(--mono); font-weight: 500; }
+/* Arrow (components/Arrow.tsx): whole pixels per cell so it stays crisp. "nudge" buttons push it forward every
+   couple of seconds to draw the eye; hovering any button slides it out and back in. */
+.arrow { --cell: 3px; display: inline-flex; flex: none; }
+.arrow svg { display: block; width: calc(10 * var(--cell)); height: calc(8 * var(--cell)); }
+.big .arrow, .reg > .submit .arrow { --cell: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  .nudge .arrow svg { animation: nudge 2.4s ease-in-out infinite; }
+  a:hover .arrow svg, a:focus-visible .arrow svg,
+  button:hover:not(:disabled):not([aria-disabled="true"]) .arrow svg { animation: through 0.5s ease-in-out; }
+}
+@keyframes nudge {
+  0%, 60%, 78%, 92%, 100% { transform: translateX(0); }
+  70% { transform: translateX(8px); }
+  86% { transform: translateX(4px); }
+}
+@keyframes through {
+  0% { transform: translateX(0); opacity: 1; }
+  45% { transform: translateX(24px); opacity: 0; }
+  46% { transform: translateX(-24px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
 
 /* Logo: Kota Doria weave mark + kota.codes wordmark. The mark is 2x the wordmark's cap height (0.73em). */
 .lg .t { fill: var(--logo-thread); }
@@ -148,6 +168,8 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .intro-cell p { font-size: clamp(21px, 2.1vw, 28px); line-height: 1.35; letter-spacing: -0.01em; max-width: 34em; }
 .btn { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 22px; border-radius: 0; background: var(--green); color: var(--on-green); text-decoration: none; font-size: 19px; font-weight: 600; }
 .btn:hover { filter: brightness(1.1); }
+.btn.big { padding: 24px; font-size: 22px; }
+@media (max-width: 640px) { .btn.big { padding: 22px 20px; font-size: 20px; } }
 
 /* Section heading */
 .head { padding: 96px 28px 36px; }
@@ -281,7 +303,11 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 a.ghost { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
 .reg > .submit { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 96px; padding: 28px; border: 0; border-radius: 0;
   background: var(--green); color: var(--on-green); font: 600 22px var(--sans); letter-spacing: -0.01em; text-align: left; cursor: pointer; }
-.reg > .submit:hover:not(:disabled) { filter: brightness(1.1); }
+.reg > .submit { transition: background-color 0.25s, color 0.25s; }
+.reg > .submit:hover:not(:disabled):not([aria-disabled="true"]) { filter: brightness(1.1); }
+/* Greyed out until every required answer is in. Still tappable: a tap jumps to what's missing. */
+.reg > .submit[aria-disabled="true"] { background: var(--cell); color: var(--muted); cursor: not-allowed; }
+.reg > .submit[aria-disabled="true"]:focus-visible { outline-color: var(--ink); }
 .reg > .submit:disabled { cursor: progress; opacity: 0.75; }
 .reg > .submit:focus-visible { outline: 3px solid var(--on-green); outline-offset: -8px; }
 @media (max-width: 640px) { .reg > .submit { padding: 22px 20px; min-height: 76px; font-size: 20px; } }

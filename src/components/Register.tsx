@@ -1,4 +1,5 @@
 import { EVENT, SITE } from '../content';
+import { Arrow } from './Arrow';
 import { Pixel } from './Pixel';
 import { RegisterForm } from './RegisterForm';
 
@@ -18,7 +19,7 @@ export function Register({ form = false }: { form?: boolean }) {
           </div>
           <div className="pad right">
             <p>
-              Entry is free, and chai, snacks and lunch are on us. Seats are limited, so tell us you’re coming. It takes
+              Entry is free, and coffee and snacks are on us. Seats are limited, so tell us you’re coming. It takes
               about two minutes.
             </p>
             {form ? (
@@ -26,8 +27,8 @@ export function Register({ form = false }: { form?: boolean }) {
                 New here? <a href="/">Read about the day, the speakers and the FAQ</a>.
               </p>
             ) : (
-              <a className="btn" href="/register">
-                Register now <span className="arrow" aria-hidden="true">→</span>
+              <a className="btn big nudge" href="/register">
+                Register now <Arrow />
               </a>
             )}
             <p className="small">

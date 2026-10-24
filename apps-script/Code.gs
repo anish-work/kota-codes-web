@@ -247,7 +247,7 @@ function sendConfirmation(v, status, s) {
     body = [
       'Hi ' + first + ',',
       '',
-      'Your seat at ' + EVENT_NAME + ' is saved. Entry is free, and chai, snacks and lunch are on us.',
+      'Your seat at ' + EVENT_NAME + ' is saved. Entry is free, and coffee and snacks are on us.',
       '',
       details,
       '',
