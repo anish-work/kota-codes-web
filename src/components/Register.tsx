@@ -19,8 +19,8 @@ export function Register({ form = false }: { form?: boolean }) {
           </div>
           <div className="pad right">
             <p>
-              Entry is free, and snacks and coffee are on us. Seats are limited, so tell us you’re coming. It takes
-              about two minutes.
+              Entry is free, and snacks and coffee are on us. Seats are limited, so tell us you’re coming. It takes 30
+              seconds.
             </p>
             {form ? (
               <p className="small">

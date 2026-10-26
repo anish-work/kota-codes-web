@@ -279,11 +279,11 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 :root[data-theme="dark"] { --caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M0 0h12L6 8z' fill='%239AA39C'/%3E%3C/svg%3E"); }
 
 .reg { grid-template-columns: minmax(0, 1fr); position: relative; }
-/* Wide screens: name/whatsapp/email, then the three choice groups, in thirds; the rest in halves. */
+/* Wide screens: name/whatsapp/email in thirds, then "describes you" beside the consent boxes, then the note beside the button. */
 @media (min-width: 1000px) {
   .reg { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .reg > * { grid-column: span 2; }
-  .reg > :nth-child(n+7) { grid-column: span 3; }
+  .reg > :nth-child(n+4) { grid-column: span 3; }
 }
 .field { display: flex; flex-direction: column; gap: 10px; border: 0; margin: 0; min-width: 0; }
 .field label, .field legend { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }

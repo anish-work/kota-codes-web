@@ -33,7 +33,7 @@ export const REGISTER_PAGE = {
   path: '/register',
   title: 'Register for Kota Codes Meetup #01 · Free AI & Tech Meetup in Kota',
   description:
-    'Save your free seat at Kota’s first AI & tech meetup: Saturday 7 November, 10:30 am – 1:30 pm at iStart Nest, Kota. Snacks and coffee included, no coding needed. It takes about two minutes.',
+    'Save your free seat at Kota’s first AI & tech meetup: Saturday 7 November, 10:30 am – 1:30 pm at iStart Nest, Kota. Snacks and coffee included, no coding needed. It takes 30 seconds.',
 };
 
 export const WHO = [
@@ -84,7 +84,7 @@ export const SPEAKERS = [
 ];
 
 export const FAQ = [
-  { q: 'Is it really free?', a: 'Yes. Entry is free, and snacks and coffee are on us. We only ask you to register so we know how many people are coming.' },
+  { q: 'Is it really free?', a: 'Yes. Entry is free, and snacks and coffee are on us. We only ask you to register, which takes 30 seconds, so we know how many people are coming.' },
   { q: 'I don’t know anything about coding. Can I still come?', a: 'Yes, please do. Most of the morning is for people who are new to AI and tech. Everything is explained simply, and you can ask anything.' },
   { q: 'What should I bring?', a: 'Your phone is enough. If you have a laptop, bring it along with a charger.' },
   { q: 'Can school students come?', a: 'Yes, from Class 9 upwards, with a parent’s permission. Parents are welcome to come too.' },
