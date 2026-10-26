@@ -12,12 +12,17 @@ export const DESCRIBES = [
   'Teacher or parent',
   'Other',
 ];
+// Asked only until the new apps-script/Code.gs is deployed: the live script rejects a signup without them.
+export const AI_EXPERIENCE = ['Never', 'A few times', 'Often'];
+export const LAPTOP = ['Yes', 'No', 'Phone only'];
 
 export type FormValues = {
   name: string;
   whatsapp: string;
   email: string;
   describes: string;
+  aiExperience: string;
+  laptop: string;
   parentPermission: boolean;
   photoConsent: boolean;
   website: string; // honeypot, must stay empty
@@ -31,6 +36,8 @@ export const EMPTY: FormValues = {
   whatsapp: '',
   email: '',
   describes: '',
+  aiExperience: '',
+  laptop: '',
   parentPermission: false,
   photoConsent: false,
   website: '',
@@ -52,6 +59,8 @@ export function validate(v: FormValues): Errors {
   if (!v.email.trim()) e.email = 'Please add your email.';
   else if (!EMAIL.test(v.email.trim())) e.email = 'That email doesn’t look right. Check for typos.';
   if (!v.describes) e.describes = 'Please pick the one closest to you.';
+  if (!v.aiExperience) e.aiExperience = 'Please pick one.';
+  if (!v.laptop) e.laptop = 'Please pick one.';
   if (v.describes === SCHOOL_STUDENT && !v.parentPermission)
     e.parentPermission = 'Please check with a parent first, then tick this box.';
   if (!v.photoConsent) e.photoConsent = 'We take photos at the event, so we need your okay to register you.';
