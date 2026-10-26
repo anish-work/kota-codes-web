@@ -19,9 +19,9 @@ Deployed on Vercel: `vercel.json` sets the build (`npm run build` -> `dist/`) an
 - `scripts/prerender.js`: renders each page (`/` and `/register`) to HTML at build time and writes `sitemap.xml`.
 - `src/weave.ts`: the Kota Doria weave (logo mark, cloth swatch, woven border), built from the brand board's proportions. The favicon is generated from it at build time.
 - `src/illustrations/`: "Kota in pixels" SVGs from the graphics artifact, rendered by `src/components/Pixel.tsx` at whole-number scales.
-- `public/`: `og-image.png` (1200×630 share image), `apple-touch-icon.png`, `robots.txt`.
+- `public/`: `og-image.png` (1200×630 share image; its top-right line spells out the date and venue, so redraw it when they change), `apple-touch-icon.png`, `robots.txt`.
 
-When the venue is announced, set `EVENT.venue` in `src/content.ts`.
+Date and time: `EVENT.start`/`end` and the labels in `src/content.ts` (setting `start` to null hides the countdown and Google's event listing). Venue: `CONFIG.venue` in `src/config.ts`: name and address, `mapsUrl` (the Google Maps share link every "Get directions" button opens) and `coordinates` (`[latitude, longitude]`, which turn on the map in the venue section). The confirmation emails read the same facts from the Sheet's Settings tab.
 If the site moves off `https://kota.codes`, update `SITE.url`, `index.html` and `public/robots.txt`.
 
 ## Registration form

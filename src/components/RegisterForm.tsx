@@ -3,6 +3,7 @@ import { celebrate } from '../celebrate';
 import { CONFIG } from '../config';
 import { EVENT } from '../content';
 import { Arrow } from './Arrow';
+import { Directions } from './Venue';
 import {
   AI_EXPERIENCE,
   DESCRIBES,
@@ -84,26 +85,15 @@ function Choice(props: {
 }
 
 function Details() {
-  const venue = CONFIG.venue.name ? [CONFIG.venue.name, CONFIG.venue.address].filter(Boolean).join(', ') : null;
   return (
     <dl className="details">
       <div>
         <dt>when</dt>
-        <dd>{EVENT.whenText}. We’ll email you the date and time.</dd>
+        <dd>{EVENT.start ? EVENT.whenText : `${EVENT.whenText}. We’ll email you the date and time.`}</dd>
       </div>
       <div>
         <dt>venue</dt>
-        <dd>
-          {venue ?? 'In Kota, to be announced. We’ll email you and post it on Instagram.'}
-          {venue && CONFIG.venue.mapsUrl && (
-            <>
-              {' '}
-              <a href={CONFIG.venue.mapsUrl} target="_blank" rel="noopener">
-                Open in Maps
-              </a>
-            </>
-          )}
-        </dd>
+        <dd>{EVENT.where ?? 'In Kota, to be announced. We’ll email you and post it on Instagram.'}</dd>
       </div>
       <div>
         <dt>bring</dt>
@@ -162,7 +152,10 @@ function Outcome({ result }: { result: Result }) {
       </div>
       <div className="pad done-side">
         <Details />
-        <JoinCommunity className="btn" />
+        <div className="done-actions">
+          <JoinCommunity className="btn" />
+          <Directions className="ghost" />
+        </div>
       </div>
     </div>
   );

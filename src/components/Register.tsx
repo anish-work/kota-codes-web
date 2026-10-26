@@ -12,7 +12,7 @@ export function Register({ form = false }: { form?: boolean }) {
         <div className="frame cells seat">
           <div className="pad left">
             <p className="mono meta-tail">
-              {EVENT.when} / kota
+              {EVENT.when} / {(EVENT.where ?? EVENT.city).toLowerCase()}
             </p>
             <Heading id="register-h">save-your-seat/</Heading>
             <Pixel name="palace" />

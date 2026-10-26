@@ -14,15 +14,18 @@ export const EVENT = {
   name: 'Kota Codes Meetup #01',
   description:
     'A free, friendly morning to learn what AI really is, try it yourself, and meet people in Kota who are curious about technology. No coding knowledge needed.',
-  // Date not fixed yet. When it is, set start/end (IST, e.g. '2026-11-08T10:30:00+05:30') and the two
-  // labels below; the countdown and Google's event listing switch on once start is set.
-  start: null as string | null,
-  end: null as string | null,
-  when: 'coming soon, around diwali', // lowercase mono labels
-  whenText: 'Coming soon, around Diwali', // in sentences
+  // IST. The countdown and Google's event listing run from start/end; set them to null to hide the date again
+  // (and put "coming soon" wording in the labels below).
+  start: '2026-11-07T10:30:00+05:30' as string | null,
+  end: '2026-11-07T13:30:00+05:30' as string | null,
+  date: 'Saturday, 7 November',
+  time: '10:30 am – 1:30 pm',
+  when: 'saturday, 7 november / 10:30 am – 1:30 pm', // lowercase mono labels
+  whenText: 'Saturday, 7 November 2026, 10:30 am – 1:30 pm', // in sentences
   city: 'Kota',
   region: 'Rajasthan',
   venue: CONFIG.venue.name || null, // set in src/config.ts
+  where: [CONFIG.venue.name, CONFIG.venue.address].filter(Boolean).join(', ') || null, // "iStart Nest, Kota"
 };
 
 // Head tags for /register. The home page uses the ones written in index.html.
@@ -30,7 +33,7 @@ export const REGISTER_PAGE = {
   path: '/register',
   title: 'Register for Kota Codes Meetup #01 · Free AI & Tech Meetup in Kota',
   description:
-    'Save your free seat at Kota’s first AI & tech meetup, coming soon around Diwali. Snacks and coffee included, no coding needed. It takes about two minutes.',
+    'Save your free seat at Kota’s first AI & tech meetup: Saturday 7 November, 10:30 am – 1:30 pm at iStart Nest, Kota. Snacks and coffee included, no coding needed. It takes about two minutes.',
 };
 
 export const WHO = [
@@ -85,6 +88,6 @@ export const FAQ = [
   { q: 'I don’t know anything about coding. Can I still come?', a: 'Yes, please do. Most of the morning is for people who are new to AI and tech. Everything is explained simply, and you can ask anything.' },
   { q: 'What should I bring?', a: 'Your phone is enough. If you have a laptop, bring it along with a charger.' },
   { q: 'Can school students come?', a: 'Yes, from Class 9 upwards, with a parent’s permission. Parents are welcome to come too.' },
-  { q: 'Where exactly is it?', a: 'The venue in Kota will be announced soon on our Instagram, @kota.codes, and shared with everyone who registers.' },
+  { q: 'Where exactly is it?', a: 'At iStart Nest in Kota. Tap Get directions in the venue section to open it in Google Maps.' },
   { q: 'Is there a dress code or anything to prepare?', a: 'No. Come as you are, and bring a friend if you like.' },
 ];
