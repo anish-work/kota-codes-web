@@ -1,3 +1,4 @@
+import { CONFIG } from './config';
 import { EVENT, FAQ, SITE, SPEAKERS } from './content';
 
 // JSON-LD structured data, injected into <head> at prerender time.
@@ -27,6 +28,7 @@ export function structuredData() {
     location: {
       '@type': 'Place',
       name: EVENT.venue ?? `${EVENT.city}, ${EVENT.region} (venue to be announced)`,
+      ...(CONFIG.venue.mapsUrl && { hasMap: CONFIG.venue.mapsUrl }),
       address: {
         '@type': 'PostalAddress',
         addressLocality: EVENT.city,

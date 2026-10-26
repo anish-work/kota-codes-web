@@ -17,12 +17,12 @@ export function Day() {
         <div className="frame cells day">
           <div className="pad side">
             <p className="when">
-              Coming soon,
+              {EVENT.date.split(', ')[0]},
               <br />
-              around Diwali
+              {EVENT.date.split(', ')[1]}
             </p>
-            <p className="mono">date and time to be announced</p>
-            <p>A three-hour morning, with snacks and coffee. The plan below may shift a little once the date is fixed.</p>
+            <p className="mono">{EVENT.time}</p>
+            <p>A three-hour morning, with snacks and coffee. Times may shift by a few minutes on the day.</p>
           </div>
           <div>
             {SCHEDULE.map(({ part, slots }) => (

@@ -3,12 +3,10 @@ import { celebrate } from '../celebrate';
 import { CONFIG } from '../config';
 import { EVENT } from '../content';
 import { Arrow } from './Arrow';
+import { Directions } from './Venue';
 import {
-  AI_EXPERIENCE,
   DESCRIBES,
   EMPTY,
-  HEARD_FROM,
-  LAPTOP,
   SCHOOL_STUDENT,
   submit,
   validate,
@@ -21,7 +19,7 @@ import {
 type Phase = { kind: 'idle' } | { kind: 'sending' } | { kind: 'failed'; message: string } | { kind: 'done'; result: Result };
 
 // Order used to move focus to the first field with a problem.
-const ORDER: FieldName[] = ['name', 'whatsapp', 'email', 'describes', 'aiExperience', 'laptop', 'parentPermission', 'photoConsent'];
+const ORDER: FieldName[] = ['name', 'whatsapp', 'email', 'describes', 'parentPermission', 'photoConsent'];
 
 // How each required answer is named in the "still needed" line above the button.
 const NEEDED: Partial<Record<FieldName, string>> = {
@@ -29,8 +27,6 @@ const NEEDED: Partial<Record<FieldName, string>> = {
   whatsapp: 'whatsapp number',
   email: 'email',
   describes: 'what describes you',
-  aiExperience: 'ai tools',
-  laptop: 'laptop',
   parentPermission: 'parent’s permission',
   photoConsent: 'photo okay',
 };
@@ -84,26 +80,15 @@ function Choice(props: {
 }
 
 function Details() {
-  const venue = CONFIG.venue.name ? [CONFIG.venue.name, CONFIG.venue.address].filter(Boolean).join(', ') : null;
   return (
     <dl className="details">
       <div>
         <dt>when</dt>
-        <dd>{EVENT.whenText}. We’ll email you the date and time.</dd>
+        <dd>{EVENT.start ? EVENT.whenText : `${EVENT.whenText}. We’ll email you the date and time.`}</dd>
       </div>
       <div>
         <dt>venue</dt>
-        <dd>
-          {venue ?? 'In Kota, to be announced. We’ll email you and post it on Instagram.'}
-          {venue && CONFIG.venue.mapsUrl && (
-            <>
-              {' '}
-              <a href={CONFIG.venue.mapsUrl} target="_blank" rel="noopener">
-                Open in Maps
-              </a>
-            </>
-          )}
-        </dd>
+        <dd>{EVENT.where ?? 'In Kota, to be announced. We’ll email you and post it on Instagram.'}</dd>
       </div>
       <div>
         <dt>bring</dt>
@@ -162,7 +147,10 @@ function Outcome({ result }: { result: Result }) {
       </div>
       <div className="pad done-side">
         <Details />
-        <JoinCommunity className="btn" />
+        <div className="done-actions">
+          <JoinCommunity className="btn" />
+          <Directions className="ghost" />
+        </div>
       </div>
     </div>
   );
@@ -248,28 +236,6 @@ export function RegisterForm() {
 
       <Choice name="describes" legend="Which describes you best?" options={DESCRIBES} value={v.describes}
         error={errors.describes} onChange={onText} />
-      <Choice name="aiExperience" legend="Have you used AI tools before?" options={AI_EXPERIENCE} value={v.aiExperience}
-        error={errors.aiExperience} onChange={onText} />
-      <Choice name="laptop" legend="Will you bring a laptop?" options={LAPTOP} value={v.laptop}
-        error={errors.laptop} onChange={onText} />
-
-      <Field id="f-org" label="College, school or workplace" hint="optional">
-        <input id="f-org" name="org" autoComplete="organization" value={v.org} onChange={onText} maxLength={150}
-          aria-describedby="f-org-hint" />
-      </Field>
-      <Field id="f-heardFrom" label="How did you hear about Kota Codes?" hint="optional">
-        <select id="f-heardFrom" name="heardFrom" value={v.heardFrom} onChange={onText} aria-describedby="f-heardFrom-hint">
-          <option value="">Choose one</option>
-          {HEARD_FROM.map((o) => (
-            <option key={o}>{o}</option>
-          ))}
-        </select>
-      </Field>
-
-      <Field id="f-learn" label="What would you like to learn or ask?" hint="optional. a question, a topic, anything" >
-        <textarea id="f-learn" name="learn" rows={4} value={v.learn} onChange={onText} maxLength={1000}
-          aria-describedby="f-learn-hint" />
-      </Field>
 
       <div className="field pad consent">
         {isSchool && (

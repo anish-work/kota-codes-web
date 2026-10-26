@@ -9,6 +9,7 @@ import { PageEdge } from './components/Pixel';
 import { Register } from './components/Register';
 import { Speakers } from './components/Speakers';
 import { Takeaways } from './components/Takeaways';
+import { Venue } from './components/Venue';
 import { Who } from './components/Who';
 
 export type Page = 'home' | 'register';
@@ -34,6 +35,7 @@ export function App({ page }: { page: Page }) {
             <Speakers />
             <Who />
             <Day />
+            <Venue />
             <Takeaways />
             <Faq />
             <Register />

@@ -12,20 +12,12 @@ export const DESCRIBES = [
   'Teacher or parent',
   'Other',
 ];
-export const AI_EXPERIENCE = ['Never', 'A few times', 'Often'];
-export const LAPTOP = ['Yes', 'No', 'Phone only'];
-export const HEARD_FROM = ['Instagram', 'WhatsApp', 'A friend', 'College', 'iStart Nest', 'Other'];
 
 export type FormValues = {
   name: string;
   whatsapp: string;
   email: string;
   describes: string;
-  org: string;
-  aiExperience: string;
-  laptop: string;
-  learn: string;
-  heardFrom: string;
   parentPermission: boolean;
   photoConsent: boolean;
   website: string; // honeypot, must stay empty
@@ -39,11 +31,6 @@ export const EMPTY: FormValues = {
   whatsapp: '',
   email: '',
   describes: '',
-  org: '',
-  aiExperience: '',
-  laptop: '',
-  learn: '',
-  heardFrom: '',
   parentPermission: false,
   photoConsent: false,
   website: '',
@@ -65,8 +52,6 @@ export function validate(v: FormValues): Errors {
   if (!v.email.trim()) e.email = 'Please add your email.';
   else if (!EMAIL.test(v.email.trim())) e.email = 'That email doesn’t look right. Check for typos.';
   if (!v.describes) e.describes = 'Please pick the one closest to you.';
-  if (!v.aiExperience) e.aiExperience = 'Please pick one.';
-  if (!v.laptop) e.laptop = 'Please pick one.';
   if (v.describes === SCHOOL_STUDENT && !v.parentPermission)
     e.parentPermission = 'Please check with a parent first, then tick this box.';
   if (!v.photoConsent) e.photoConsent = 'We take photos at the event, so we need your okay to register you.';
@@ -83,8 +68,6 @@ export async function submit(v: FormValues): Promise<Result> {
     name: v.name.trim(),
     whatsapp: normalizePhone(v.whatsapp),
     email: v.email.trim(),
-    org: v.org.trim(),
-    learn: v.learn.trim(),
     parentPermission: v.describes === SCHOOL_STUDENT && v.parentPermission,
   };
   const res = await fetch(CONFIG.webAppUrl, { method: 'POST', body: JSON.stringify(payload) });

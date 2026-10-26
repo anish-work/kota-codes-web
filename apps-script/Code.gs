@@ -157,8 +157,9 @@ function validate(v) {
   if (!v.whatsapp) return 'Please add a 10-digit Indian WhatsApp number.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) return 'Please add a valid email.';
   if (OPTIONS.describes.indexOf(v.describes) < 0) return 'Please pick what describes you best.';
-  if (OPTIONS.aiExperience.indexOf(v.aiExperience) < 0) return 'Please tell us if you’ve used AI tools before.';
-  if (OPTIONS.laptop.indexOf(v.laptop) < 0) return 'Please tell us if you’ll bring a laptop.';
+  // The form no longer asks these; older forms still send them. Anything unexpected is dropped.
+  if (OPTIONS.aiExperience.indexOf(v.aiExperience) < 0) v.aiExperience = '';
+  if (OPTIONS.laptop.indexOf(v.laptop) < 0) v.laptop = '';
   if (OPTIONS.heardFrom.indexOf(v.heardFrom) < 0) v.heardFrom = 'Other';
   if (v.describes === SCHOOL_STUDENT && !v.parentPermission) return 'School students need a parent’s permission to come.';
   if (!v.photoConsent) return 'We need your okay for photos and video to register you.';

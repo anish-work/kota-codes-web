@@ -12,15 +12,15 @@ export function Register({ form = false }: { form?: boolean }) {
         <div className="frame cells seat">
           <div className="pad left">
             <p className="mono meta-tail">
-              {EVENT.when} / kota
+              {EVENT.when} / {(EVENT.where ?? EVENT.city).toLowerCase()}
             </p>
             <Heading id="register-h">save-your-seat/</Heading>
             <Pixel name="palace" />
           </div>
           <div className="pad right">
             <p>
-              Entry is free, and snacks and coffee are on us. Seats are limited, so tell us you’re coming. It takes
-              about two minutes.
+              Entry is free, and snacks and coffee are on us. Seats are limited, so tell us you’re coming. It takes 30
+              seconds.
             </p>
             {form ? (
               <p className="small">

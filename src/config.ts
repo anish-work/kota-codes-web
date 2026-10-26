@@ -9,10 +9,13 @@ export const CONFIG = {
   whatsappCommunityUrl: 'https://chat.whatsapp.com/CCxRJn22gbCK6CZIX3UQPB',
 
   // Leave name empty until the venue is announced; the page then says "venue to be announced".
+  // mapsUrl is the share link from Google Maps; every "Get directions" button opens it.
+  // coordinates ([latitude, longitude]) turn on the map in the venue section. Keep in sync with the Sheet's Settings tab.
   venue: {
-    name: '',
-    address: '',
-    mapsUrl: '',
+    name: 'iStart Nest',
+    address: 'Kota',
+    mapsUrl: 'https://maps.app.goo.gl/NSXd63qb7DHGtfF77',
+    coordinates: null as [number, number] | null,
   },
 
   whatToBring: 'Your phone. A laptop and charger if you have one.',
