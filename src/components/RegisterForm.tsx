@@ -5,8 +5,10 @@ import { EVENT } from '../content';
 import { Arrow } from './Arrow';
 import { Directions } from './Venue';
 import {
+  AI_EXPERIENCE,
   DESCRIBES,
   EMPTY,
+  LAPTOP,
   SCHOOL_STUDENT,
   submit,
   validate,
@@ -19,7 +21,7 @@ import {
 type Phase = { kind: 'idle' } | { kind: 'sending' } | { kind: 'failed'; message: string } | { kind: 'done'; result: Result };
 
 // Order used to move focus to the first field with a problem.
-const ORDER: FieldName[] = ['name', 'whatsapp', 'email', 'describes', 'parentPermission', 'photoConsent'];
+const ORDER: FieldName[] = ['name', 'whatsapp', 'email', 'describes', 'aiExperience', 'laptop', 'parentPermission', 'photoConsent'];
 
 // How each required answer is named in the "still needed" line above the button.
 const NEEDED: Partial<Record<FieldName, string>> = {
@@ -27,6 +29,8 @@ const NEEDED: Partial<Record<FieldName, string>> = {
   whatsapp: 'whatsapp number',
   email: 'email',
   describes: 'what describes you',
+  aiExperience: 'ai tools',
+  laptop: 'laptop',
   parentPermission: 'parent’s permission',
   photoConsent: 'photo okay',
 };
@@ -236,6 +240,10 @@ export function RegisterForm() {
 
       <Choice name="describes" legend="Which describes you best?" options={DESCRIBES} value={v.describes}
         error={errors.describes} onChange={onText} />
+      <Choice name="aiExperience" legend="Have you used AI tools before?" options={AI_EXPERIENCE} value={v.aiExperience}
+        error={errors.aiExperience} onChange={onText} />
+      <Choice name="laptop" legend="Will you bring a laptop?" options={LAPTOP} value={v.laptop}
+        error={errors.laptop} onChange={onText} />
 
       <div className="field pad consent">
         {isSchool && (
