@@ -10,7 +10,7 @@ export function Speakers() {
           {SPEAKERS.map((s) => (
             <figure className="person" key={s.name}>
               <div className="portrait" aria-hidden="true">
-                <span>{s.name[0]}</span>
+                {s.photo ? <img src={s.photo} alt="" loading="lazy" decoding="async" /> : <span>{s.name[0]}</span>}
               </div>
               <figcaption>
                 {s.name}, {s.org}
