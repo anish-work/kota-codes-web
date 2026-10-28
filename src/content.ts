@@ -2,6 +2,8 @@
 // The page, the JSON-LD structured data and the meta tags all read from here.
 
 import { CONFIG } from './config';
+import devPhoto from './photos/dev.webp';
+import milindPhoto from './photos/milind.webp';
 
 export const SITE = {
   url: 'https://kota.codes',
@@ -55,7 +57,7 @@ export const SCHEDULE: { part: string; slots: Slot[] }[] = [
       { time: '10:45 am', title: 'Welcome', note: 'Who we are, and why Kota needs a place for people who love tech.' },
       { time: '10:55 am', title: 'AI: myth or fact?', note: 'A fun game about things people fear about AI, like “Will it take my job?” You vote, then live demos show the answer.' },
       { time: '11:10 am', title: 'Talk by Dev', note: 'CTO at Gooey.AI. Topic to be announced.' },
-      { time: '11:30 am', title: 'Talk by Millind', note: 'Software Developer at Gooey.AI. Topic to be announced.' },
+      { time: '11:30 am', title: 'Talk by Milind', note: 'Software Developer at Gooey.AI. Topic to be announced.' },
       { time: '11:45 am', title: 'Short break' },
     ],
   },
@@ -79,8 +81,8 @@ export const TAKEAWAYS = [
 ];
 
 export const SPEAKERS = [
-  { name: 'Dev', org: 'Gooey.AI', role: 'CTO', topic: 'topic soon' },
-  { name: 'Millind', org: 'Gooey.AI', role: 'Software Developer', topic: 'topic soon' },
+  { name: 'Dev', org: 'Gooey.AI', role: 'CTO', topic: 'topic soon', photo: devPhoto },
+  { name: 'Milind', org: 'Gooey.AI', role: 'Software Developer', topic: 'topic soon', photo: milindPhoto },
 ];
 
 export const FAQ = [
