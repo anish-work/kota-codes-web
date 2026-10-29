@@ -68,6 +68,7 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .bar { background: var(--bar); color: var(--bar-fg); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .bar .in { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; padding-block: 12px; font-family: var(--mono); font-size: 16px; }
 .bar .num { color: var(--bar-num); font-variant-numeric: tabular-nums; white-space: pre; }
+.bar .num i { font-style: normal; color: var(--bar-fg); opacity: 0.75; }
 
 /* Nav */
 .nav { grid-template-columns: auto repeat(4, minmax(0, 1fr)) minmax(0, 1.2fr); }
