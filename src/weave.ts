@@ -75,3 +75,9 @@ export function toSvg(rects: Rect[]) {
 
 export const MARK_SVG = toSvg(markRects());
 export const BORDER_SVG = toSvg(borderRects());
+
+// Any pattern of checks (X = green) woven at the border's proportions, like the band on a registration pass.
+export function clothSvg(pattern: string[]) {
+  const { pitch, thread } = BORDER;
+  return { svg: toSvg(clothRects(pattern, pitch, thread)), w: pattern[0].length * pitch + thread, h: pattern.length * pitch + thread };
+}

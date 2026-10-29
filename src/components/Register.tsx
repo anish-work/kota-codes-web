@@ -1,9 +1,9 @@
 import { EVENT, SITE } from '../content';
 import { Arrow } from './Arrow';
 import { Pixel } from './Pixel';
-import { RegisterForm } from './RegisterForm';
+import { RegisterChat } from './RegisterChat';
 
-// The save-your-seat section. On the home page it links to /register; on /register it holds the form.
+// The save-your-seat section. On the home page it links to /register; on /register the chat with the bot follows it.
 export function Register({ form = false }: { form?: boolean }) {
   const Heading = form ? 'h1' : 'h2';
   return (
@@ -41,8 +41,10 @@ export function Register({ form = false }: { form?: boolean }) {
         </div>
       </div>
       {form && (
-        <div className="band" id="register-form">
-          <RegisterForm />
+        <div className="band chat-band" id="register-form">
+          <div className="frame">
+            <RegisterChat />
+          </div>
         </div>
       )}
     </section>
