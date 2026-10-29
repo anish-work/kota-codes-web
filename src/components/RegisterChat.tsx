@@ -7,20 +7,24 @@ import { SCHOOL_STUDENT, firstName, normalizePhone, submit, type FormValues, typ
 import { Arrow } from './Arrow';
 import { WeaveMark } from './Logo';
 import { Pass } from './Pass';
+import { Pixel } from './Pixel';
 import { SeatCard } from './SeatCard';
 import { Typed, reducedMotion } from './Typed';
 import { Directions } from './Venue';
 
 // Registration as a chat with the kota.codes bot. Nothing here is a language model: the bot's lines are written
-// below and typed out a chunk at a time. It says hello, hands over one card with every question, then saves the seat
-// through the same Apps Script web app as before, showing each step, and prints a pass.
+// below and typed out a chunk at a time. It says hello, shows the day on a card, hands over one card with every
+// question, then saves the seat through the same Apps Script web app as before, showing each step, and prints a pass.
 
-const HELLO = `Hi! I’m the kota.codes bot, and I’ll save your seat at ${EVENT.name}.`;
-const ASK = 'Everything I need is on this one card. It takes about 30 seconds.';
+const HELLO = 'Hi! I’m the kota.codes bot. Here’s what you’re signing up for:';
+const ASK = 'Seats are limited, so answer these and I’ll hold one for you. It takes about 30 seconds.';
 
-// wait: typing dots, until the chat is on screen. card: a skeleton for a moment, as if the card is being generated.
-type Intro = 'wait' | 'hello' | 'ask' | 'card' | 'ready';
-const INTRO: Intro[] = ['wait', 'hello', 'ask', 'card', 'ready'];
+// wait: typing dots, until the chat is on screen. event: the day's card builds. card: a skeleton for a moment, as if
+// the card of questions is being generated.
+type Intro = 'wait' | 'hello' | 'event' | 'ask' | 'card' | 'ready';
+const INTRO: Intro[] = ['wait', 'hello', 'event', 'ask', 'card', 'ready'];
+// Steps with nothing to type: how long the bot stays on each before moving on.
+const LINGER: Partial<Record<Intro, [Intro, number]>> = { event: ['ask', 1100], card: ['ready', 550] };
 
 type Answer = { kind: 'result'; result: Result } | { kind: 'failed'; message: string };
 type Attempt = { id: number; answer?: Answer };
@@ -132,6 +136,25 @@ function Spinner() {
         <rect key={i} x={x} y={y} width="1" height="1" style={{ animationDelay: `${(i - RING.length) * 0.1}s` }} />
       ))}
     </svg>
+  );
+}
+
+// The bot's first card: the day at a glance, with the palace building itself row by row.
+function EventCard() {
+  return (
+    <div className="event-card">
+      <Pixel name="palace" />
+      <p className="mono">{EVENT.name.toLowerCase()}</p>
+      <p className="event-title">
+        Kota’s first AI &amp; tech meetup<span className="sq" aria-hidden="true"></span>
+      </p>
+      <p className="mono">
+        {EVENT.when} / {(EVENT.where ?? EVENT.city).toLowerCase()} / free entry, snacks and coffee
+      </p>
+      <a className="mono" href="/">
+        new here? read about the day, the speakers and the faq
+      </a>
+    </div>
   );
 }
 
@@ -320,8 +343,9 @@ export function RegisterChat() {
   }, []);
 
   useEffect(() => {
-    if (intro !== 'card') return;
-    const t = setTimeout(advance('card', 'ready'), 550);
+    const next = LINGER[intro];
+    if (!next) return;
+    const t = setTimeout(advance(intro, next[0]), next[1]);
     return () => clearTimeout(t);
   }, [intro]);
 
@@ -389,15 +413,16 @@ export function RegisterChat() {
             </p>
           ) : (
             <p className="msg">
-              <Typed text={HELLO} onDone={advance('hello', 'ask')} />
+              <Typed text={HELLO} onDone={advance('hello', 'event')} />
             </p>
           )}
-          {at >= 2 && (
+          {at >= 2 && <EventCard />}
+          {at >= 3 && (
             <p className="msg">
               <Typed text={ASK} onDone={advance('ask', 'card')} />
             </p>
           )}
-          {at === 3 && (
+          {at === 4 && (
             <div className="seat-card skeleton" aria-hidden="true">
               <i />
               <i />
@@ -405,7 +430,7 @@ export function RegisterChat() {
               <i />
             </div>
           )}
-          {at === 4 && <SeatCard open={!sent} onSend={start} />}
+          {at === 5 && <SeatCard open={!sent} onSend={start} />}
           <noscript>
             <p className="msg">
               Registering needs JavaScript. Turn it on and reload, or message us on Instagram, {SITE.handle}.

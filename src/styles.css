@@ -267,7 +267,7 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 @media (min-width: 900px) { .seat { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
 .seat .left { display: flex; flex-direction: column; gap: 40px; padding-top: 40px; }
 .meta-tail { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.seat h1, .seat h2 { font-size: clamp(38px, 6vw, 80px); line-height: 1; letter-spacing: -0.04em; }
+.seat h2 { font-size: clamp(38px, 6vw, 80px); line-height: 1; letter-spacing: -0.04em; }
 .seat .right { display: flex; flex-direction: column; gap: 16px; justify-content: flex-end; }
 .seat .right p { font-size: 19px; max-width: 32em; }
 .seat .right p.small { color: var(--muted); font-size: 16px; }
@@ -279,7 +279,8 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
    (Pass.tsx). Square corners and hairlines like the rest of the page; the green square is the bot's cursor. */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .chat-band .frame { background: radial-gradient(circle, var(--line) 1.2px, transparent 1.7px) 0 0 / 22px 22px; }
-.chat { max-width: 760px; min-height: 600px; margin: 0 auto; background: var(--bg); }
+/* At least a screen tall under the header, so the page's end stays out of sight while the bot introduces the day. */
+.chat { max-width: 760px; min-height: calc(100vh - 120px); min-height: calc(100svh - 120px); margin: 0 auto; background: var(--bg); }
 @media (min-width: 800px) { .chat { border-left: 1px solid var(--line); border-right: 1px solid var(--line); } }
 
 /* The header sticks while you scroll the card, and says "typing…" whenever the bot is busy. */
@@ -328,12 +329,24 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 @keyframes pop { from { opacity: 0; transform: scale(0.9); } }
 @keyframes seen { to { color: var(--green-text); } }
 @media (max-width: 640px) {
-  .chat { min-height: 520px; }
   .chat-head { padding: 10px 20px; }
   .thread { gap: 24px; padding: 22px 20px 40px; }
   .msg { font-size: 18px; }
 }
 @media (max-width: 400px) { .chat-tag { display: none; } }
+
+/* The bot's first card introduces the day, in brand green: the meetup's name, when and where, and a lime pixel palace
+   that builds itself from the ground up, one row of pixels at a time. */
+.event-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; row-gap: 8px; width: 100%; padding: 20px;
+  background: var(--green); color: var(--on-green); animation: turn-in 0.35s ease-out both; }
+.event-card > * { grid-column: 1; }
+.event-card .palace { --k: 3; grid-column: 2; grid-row: 1 / span 2; align-self: end; color: var(--hi); animation: build 0.9s steps(21, end) 0.15s both; }
+.event-card .mono { font-size: 13px; line-height: 1.5; }
+.event-card a { color: inherit; text-underline-offset: 3px; }
+.event-title { font-size: clamp(26px, 4.4vw, 38px); font-weight: 800; line-height: 0.95; letter-spacing: -0.04em; text-transform: uppercase; }
+.event-title .sq { display: inline-block; width: 0.2em; height: 0.2em; margin-left: 0.06em; background: var(--hi); animation: blink 0.9s steps(1) 0.9s 3; }
+@keyframes build { from { clip-path: inset(100% 0 0 0); } }
+@media (max-width: 640px) { .event-card { padding: 16px; } .event-card .palace { --k: 2; } }
 
 /* The card: a title bar, then every question in ruled rows that rise in one after another, as if being generated. */
 .seat-card { width: 100%; border: 1px solid var(--ink); background: var(--bg); }
