@@ -11,6 +11,10 @@ npm run preview  # serve dist/
 
 Deployed on Vercel: `vercel.json` sets the build (`npm run build` -> `dist/`) and cache headers. Every push to `main` deploys to production; other branches get preview URLs.
 
+## Kota vs AI game
+
+The live voting game for the meetup lives in `play/`: a separate Next.js app that runs on the presenting laptop over local wifi. It isn't part of this site's build or deploy. See `play/README.md`.
+
 ## Where things live
 
 - `src/content.ts`: all copy and event facts (date, schedule, speakers, FAQ). Edit here; the page, meta tags and structured data follow.
