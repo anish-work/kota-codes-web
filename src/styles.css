@@ -71,6 +71,7 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 
 /* Nav */
 .nav { grid-template-columns: auto repeat(4, minmax(0, 1fr)) minmax(0, 1.2fr); }
+.nav.no-cta { grid-template-columns: auto repeat(4, minmax(0, 1fr)); } /* /register, where the chat is the page */
 .nav a { text-decoration: none; display: flex; align-items: flex-end; padding: 18px 20px; min-height: 76px; font-size: 18px; font-weight: 500; }
 .nav a:hover { background: var(--cell); }
 .nav .home { align-items: center; }
@@ -78,6 +79,7 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .nav .cta:hover { background: var(--green); filter: brightness(1.1); }
 @media (max-width: 860px) {
   .nav { grid-template-columns: minmax(0, 1fr) auto; }
+  .nav.no-cta { grid-template-columns: minmax(0, 1fr); }
   .nav .link { display: none; }
 }
 /* Arrow (components/Arrow.tsx): whole pixels per cell so it stays crisp. "nudge" buttons push it forward every
@@ -283,30 +285,9 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 .chat { max-width: 760px; min-height: calc(100vh - 120px); min-height: calc(100svh - 120px); margin: 0 auto; background: var(--bg); }
 @media (min-width: 800px) { .chat { border-left: 1px solid var(--line); border-right: 1px solid var(--line); } }
 
-/* The header sticks while you scroll the card, and says "typing…" whenever the bot is busy. */
-.chat-head { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px; padding: 12px 28px; border-bottom: 1px solid var(--line);
-  background: var(--bg); background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-.avatar { display: block; flex: none; width: 40px; height: 40px; }
-.avatar .lg { display: block; width: 100%; height: 100%; }
-.chat-who { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.chat-who strong { font-size: 18px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
-.status { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 13px; line-height: 1.2; color: var(--muted); }
-.status::before { content: ""; width: 7px; height: 7px; background: var(--green); }
-.status.typing { color: var(--green-text); }
-.status.typing::before { animation: blink 0.8s steps(1) infinite; }
-.chat-tag { margin-left: auto; font-family: var(--mono); font-size: 13px; color: var(--muted); white-space: nowrap; }
-@keyframes blink { 50% { opacity: 0; } }
-/* While the bot is busy, the green checks of the K fade column by column, like a shuttle crossing the loom.
-   The mark's first 25 rects are its checks, row by row, so 5n+k is column k. */
-.avatar.talking .k { animation: loom 1.2s ease-in-out infinite; }
-.avatar.talking rect:nth-child(5n+2) { animation-delay: 0.12s; }
-.avatar.talking rect:nth-child(5n+3) { animation-delay: 0.24s; }
-.avatar.talking rect:nth-child(5n+4) { animation-delay: 0.36s; }
-.avatar.talking rect:nth-child(5n+5) { animation-delay: 0.48s; }
-@keyframes loom { 40% { opacity: 0.2; } }
 
 .thread { display: flex; flex-direction: column; gap: 28px; padding: 28px 28px 48px; }
-.turn { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; scroll-margin-top: 88px; scroll-margin-bottom: 24px; animation: turn-in 0.35s ease-out both; }
+.turn { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; scroll-margin-top: 24px; scroll-margin-bottom: 24px; animation: turn-in 0.35s ease-out both; }
 .turn:focus { outline: none; }
 .turn.you { align-items: flex-end; }
 .from { display: flex; align-items: center; gap: 8px; margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1; color: var(--muted); }
@@ -325,15 +306,14 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 /* Read receipts: the ticks turn green once the bot has seen the message. */
 .seen { margin: -6px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1; color: var(--muted); animation: seen 0s 0.9s forwards; }
 @keyframes turn-in { from { opacity: 0; transform: translateY(10px); } }
+@keyframes blink { 50% { opacity: 0; } }
 @keyframes hop { 0%, 60%, 100% { transform: translateY(0); opacity: 0.3; } 30% { transform: translateY(-7px); opacity: 1; } }
 @keyframes pop { from { opacity: 0; transform: scale(0.9); } }
 @keyframes seen { to { color: var(--green-text); } }
 @media (max-width: 640px) {
-  .chat-head { padding: 10px 20px; }
   .thread { gap: 24px; padding: 22px 20px 40px; }
   .msg { font-size: 18px; }
 }
-@media (max-width: 400px) { .chat-tag { display: none; } }
 
 /* The bot's first card introduces the day, in brand green: the meetup's name, when and where, and a lime pixel palace
    that builds itself from the ground up, one row of pixels at a time. */

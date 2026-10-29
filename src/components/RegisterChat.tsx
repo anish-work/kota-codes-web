@@ -387,21 +387,9 @@ export function RegisterChat() {
   const answer = attempt?.answer;
   const passOut = settled && answer?.kind === 'result' && answer.result.status !== 'closed';
   const quick = QUICK.filter((f) => !asked.includes(f.q));
-  const busy = intro !== 'ready' || (!!attempt && !settled) || answering;
 
   return (
     <div className="chat">
-      <header className="chat-head">
-        <span className={busy ? 'avatar talking' : 'avatar'}>
-          <WeaveMark />
-        </span>
-        <span className="chat-who">
-          <strong>kota.codes</strong>
-          <span className={busy ? 'status typing' : 'status'}>{busy ? 'typing…' : 'online'}</span>
-        </span>
-        <span className="chat-tag">bot · meetup #01</span>
-      </header>
-
       <div className="thread" role="log" aria-label="Chat with the kota.codes bot">
         <Bot turnRef={firstTurn}>
           {at === 0 ? (
