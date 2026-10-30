@@ -54,6 +54,7 @@ function shake() {
   void body.offsetWidth; // restart the animation if it's already running
   body.classList.add('shaking');
   setTimeout(() => body.classList.remove('shaking'), 700);
+  navigator.vibrate?.([40, 60, 90]); // phones that can (Android) buzz with the shake
 }
 
 export function celebrate(): () => void {

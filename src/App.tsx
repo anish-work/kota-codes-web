@@ -6,7 +6,7 @@ import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { PageEdge } from './components/Pixel';
-import { Register } from './components/Register';
+import { Register, RegisterPage } from './components/Register';
 import { Speakers } from './components/Speakers';
 import { Takeaways } from './components/Takeaways';
 import { Venue } from './components/Venue';
@@ -27,7 +27,7 @@ export function App({ page }: { page: Page }) {
       <Header page={page} />
       <main id="top">
         {page === 'register' ? (
-          <Register form />
+          <RegisterPage />
         ) : (
           <>
             <Hero />

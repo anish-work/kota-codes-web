@@ -27,7 +27,7 @@ If the site moves off `https://kota.codes`, update `SITE.url`, `index.html` and 
 
 ## Registration form
 
-The form lives on its own page, `/register` (the home page's "Save your seat" buttons link there). It posts each signup to a Google Apps Script web app, which appends a row to a Google Sheet and sends a confirmation email. Front end: `src/components/RegisterForm.tsx`, `src/registration.ts`. Settings: `src/config.ts`. Backend: `apps-script/Code.gs`.
+The form lives on its own page, `/register` (the home page's "Save your seat" buttons link there), as a chat with the kota.codes bot, first thing under the header. The bot types a hello, shows the day on a green card (the meetup, date, venue and free entry, with the pixel palace building itself), hands over one card with every question (it replies to each choice in a line), shows its steps while the seat is saved, then prints a pass with a woven band made from the person's name, and offers a few FAQ answers as quick replies. Its lines are written in the code and typed out a few characters at a time; there's no AI model behind it. Each signup is posted to a Google Apps Script web app, which appends a row to a Google Sheet and sends a confirmation email. Front end: `src/components/RegisterChat.tsx` (the conversation and outcomes), `SeatCard.tsx` (the questions), `Pass.tsx`, `Typed.tsx` (the typing effect), and `src/registration.ts` (answers, checks, sending). Settings: `src/config.ts`. Backend: `apps-script/Code.gs`.
 
 `/register` is prerendered to `dist/register.html` and served without the extension by `cleanUrls` in `vercel.json`. Its title and share text are `REGISTER_PAGE` in `src/content.ts`.
 

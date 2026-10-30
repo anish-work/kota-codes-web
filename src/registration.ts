@@ -43,6 +43,8 @@ export const EMPTY: FormValues = {
   website: '',
 };
 
+export const firstName = (name: string) => name.trim().split(/\s+/)[0];
+
 // 10-digit Indian mobile, optionally prefixed with +91. Returns "+91 98765 43210" or null.
 export function normalizePhone(raw: string) {
   const m = raw.replace(/[\s\-().]/g, '').match(/^(?:\+?91)?([6-9]\d{9})$/);

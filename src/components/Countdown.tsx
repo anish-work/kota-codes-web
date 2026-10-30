@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { EVENT } from '../content';
 
 const two = (n: number) => String(n).padStart(2, '0');
+const UNITS = [['d', 'days'], ['h', 'hours'], ['m', 'minutes'], ['s', 'seconds']];
 
-function read(now: number, start: number, end: number) {
+function read(now: number, start: number, end: number): { label: string; value: ReactNode } {
   const ms = start - now;
   if (ms <= 0) {
     return { label: now < end ? 'happening-now/' : 'thanks-for-coming/', value: 'see you at the next one' };
@@ -11,11 +12,24 @@ function read(now: number, start: number, end: number) {
   const s = Math.floor(ms / 1000);
   return {
     label: 'meetup-starts-in/',
-    value: [Math.floor(s / 86400), Math.floor((s % 86400) / 3600), Math.floor((s % 3600) / 60), s % 60].map(two).join(' : '),
+    value: <ToGo n={[Math.floor(s / 86400), Math.floor((s % 86400) / 3600), Math.floor((s % 3600) / 60), s % 60]} />,
   };
 }
 
-function Bar({ label, value }: { label: string; value: string }) {
+// "08d 07h 39m 43s": each number with its unit in a dimmer colour, read out as a word by screen readers.
+// Dashes until the first tick.
+function ToGo({ n }: { n?: number[] }) {
+  return UNITS.map(([unit, word], i) => (
+    <Fragment key={unit}>
+      {i > 0 && ' '}
+      {n ? two(n[i]) : '--'}
+      <i aria-hidden="true">{unit}</i>
+      <span className="sr-only"> {word}</span>
+    </Fragment>
+  ));
+}
+
+function Bar({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="bar">
       <div className="in">
@@ -48,5 +62,5 @@ function Ticking({ start, end }: { start: number; end: number }) {
     return () => clearInterval(id);
   }, [start, end]);
 
-  return <Bar label={state?.label ?? 'meetup-starts-in/'} value={state?.value ?? '--  :  --  :  --  :  --'} />;
+  return <Bar label={state?.label ?? 'meetup-starts-in/'} value={state?.value ?? <ToGo />} />;
 }
