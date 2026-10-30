@@ -75,14 +75,16 @@ function Reply({ text }: { text?: string }) {
 function Ask(props: { n: number; id: string; label: string; hint: string; error?: string; reply?: string; children: ReactNode }) {
   const { n, id, label, hint, error, reply, children } = props;
   return (
-    <div className="q" style={turn(n)}>
-      <label className="ql" htmlFor={id}>
-        <span className="qn">{num(n)}</span>
-        {label}
-      </label>
-      <p className="hint" id={`${id}-hint`}>
-        {hint}
-      </p>
+    <div className="q text" style={turn(n)}>
+      <div className="qhead">
+        <label className="ql" htmlFor={id}>
+          <span className="qn" aria-hidden="true">{num(n)}</span>
+          {label}
+        </label>
+        <p className="hint" id={`${id}-hint`}>
+          {hint}
+        </p>
+      </div>
       {children}
       <Reply text={reply} />
       <Err id={id} msg={error} />
@@ -97,13 +99,14 @@ function Chips(props: {
   options: string[];
   value: string;
   error?: string;
+  half?: boolean; // short enough to sit beside another question on wide screens
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
-  const { n, name, legend, options, value, error, onChange } = props;
+  const { n, name, legend, options, value, error, half, onChange } = props;
   return (
-    <fieldset className="q" id={`f-${name}`} style={turn(n)} aria-describedby={error ? `f-${name}-err` : undefined}>
+    <fieldset className={half ? 'q half' : 'q'} id={`f-${name}`} style={turn(n)} aria-describedby={error ? `f-${name}-err` : undefined}>
       <legend className="ql">
-        <span className="qn">{num(n)}</span>
+        <span className="qn" aria-hidden="true">{num(n)}</span>
         {legend}
       </legend>
       <div className="chips">
@@ -194,17 +197,17 @@ export function SeatCard({ open, onSend }: { open: boolean; onSend: (v: FormValu
         </span>
       </p>
 
-      <Ask n={1} id="f-name" label="What’s your name?" hint="as you’d like it on your name tag" error={errors.name}
+      <Ask n={1} id="f-name" label="Your name" hint="as on your name tag" error={errors.name}
         reply={greet && `nice to meet you, ${greet}.`}>
         <input id="f-name" name="name" autoComplete="name" value={v.name} onChange={onText} onBlur={onLeave} maxLength={100}
           aria-invalid={!!errors.name} aria-describedby={desc('f-name')} />
       </Ask>
-      <Ask n={2} id="f-whatsapp" label="Your WhatsApp number" hint="10 digits, +91 is optional" error={errors.whatsapp}>
+      <Ask n={2} id="f-whatsapp" label="WhatsApp number" hint="10 digits, +91 optional" error={errors.whatsapp}>
         <input id="f-whatsapp" name="whatsapp" type="tel" inputMode="tel" autoComplete="tel" value={v.whatsapp}
           onChange={onText} onBlur={onLeave} maxLength={20} placeholder="98765 43210"
           aria-invalid={!!errors.whatsapp} aria-describedby={desc('f-whatsapp')} />
       </Ask>
-      <Ask n={3} id="f-email" label="Your email" hint="we’ll send your confirmation here" error={errors.email}>
+      <Ask n={3} id="f-email" label="Email" hint="for your confirmation" error={errors.email}>
         <input id="f-email" name="email" type="email" inputMode="email" autoComplete="email" value={v.email}
           onChange={onText} onBlur={onLeave} maxLength={150} aria-invalid={!!errors.email} aria-describedby={desc('f-email')} />
       </Ask>
@@ -212,15 +215,11 @@ export function SeatCard({ open, onSend }: { open: boolean; onSend: (v: FormValu
       <Chips n={4} name="describes" legend="Which describes you best?" options={DESCRIBES} value={v.describes}
         error={errors.describes} onChange={onText} />
       <Chips n={5} name="aiExperience" legend="Have you used AI tools before?" options={AI_EXPERIENCE} value={v.aiExperience}
-        error={errors.aiExperience} onChange={onText} />
+        error={errors.aiExperience} half onChange={onText} />
       <Chips n={6} name="laptop" legend="Will you bring a laptop?" options={LAPTOP} value={v.laptop}
-        error={errors.laptop} onChange={onText} />
+        error={errors.laptop} half onChange={onText} />
 
       <div className="q" style={turn(7)}>
-        <p className="ql">
-          <span className="qn">{num(7)}</span>
-          One last thing
-        </p>
         {isSchool && (
           <div className="check">
             <label>

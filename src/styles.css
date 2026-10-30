@@ -329,53 +329,66 @@ a:focus-visible, summary:focus-visible { outline: 3px solid var(--green); outlin
 @keyframes build { from { clip-path: inset(100% 0 0 0); } }
 @media (max-width: 640px) { .event-card { padding: 16px; } .event-card .palace { --k: 2; } }
 
-/* The card: a title bar, then every question in ruled rows that rise in one after another, as if being generated. */
+/* The card: a title bar, then the questions in a ruled grid that rises in one cell after another, as if being
+   generated. Compact, so it's quick to fill: on wide screens name, WhatsApp and email sit side by side, and so do the
+   two short choices. */
 .seat-card { width: 100%; border: 1px solid var(--ink); background: var(--bg); }
+form.seat-card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1px; background: var(--line); }
+:where(form.seat-card) > * { background: var(--bg); } /* no weight, so the title bar keeps its own colour */
+@media (min-width: 700px) {
+  form.seat-card { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  form.seat-card > * { grid-column: 1 / -1; }
+  form.seat-card > .text { grid-column: span 2; }
+  form.seat-card > .half { grid-column: span 3; }
+}
 .seat-card > * { animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 70ms); }
-.card-head { display: flex; justify-content: space-between; gap: 12px; padding: 10px 20px; background: var(--ink); color: var(--bg); font-size: 13px; }
-.q { display: flex; flex-direction: column; gap: 10px; min-width: 0; margin: 0; padding: 22px 20px; border: 0; border-top: 1px solid var(--line); }
-.card-head + .q { border-top: 0; }
-.ql { font-size: 18px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
-legend.ql { float: left; width: 100%; padding: 0; margin: 0 0 10px; }
-.qn { margin-right: 8px; font-family: var(--mono); font-size: 14px; font-weight: 400; color: var(--green-text); }
+.card-head { display: flex; justify-content: space-between; gap: 12px; padding: 8px 16px; background: var(--ink); color: var(--bg); font-size: 12px; }
+.q { display: flex; flex-direction: column; gap: 8px; min-width: 0; margin: 0; padding: 14px 16px; border: 0; }
+.ql { font-size: 16px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+legend.ql { float: left; width: 100%; padding: 0; margin: 0 0 8px; }
+.qn { margin-right: 6px; font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--green-text); }
 .hint { font-family: var(--mono); font-size: 14px; line-height: 1.5; color: var(--muted); text-transform: lowercase; margin: -4px 0 0; }
+/* A text question's hint sits beside its label when there's room, under it when there isn't. */
+.qhead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; }
+.q .hint { margin: 0; font-size: 12px; }
 .seat-card input:not([type="radio"]):not([type="checkbox"]) {
-  width: 100%; margin: 0; padding: 14px; border: 1px solid var(--line); border-radius: 0; background: var(--cell);
-  color: var(--ink); font: 500 18px/1.4 var(--sans); appearance: none; -webkit-appearance: none; transition: border-color 0.15s;
+  width: 100%; margin: 0; padding: 9px 12px; border: 1px solid var(--line); border-radius: 0; background: var(--cell);
+  color: var(--ink); font: 500 16px/1.4 var(--sans); appearance: none; -webkit-appearance: none; transition: border-color 0.15s;
 }
 .seat-card input::placeholder { color: var(--muted); opacity: 1; }
 .seat-card input:hover { border-color: var(--muted); }
 .seat-card input:focus-visible { outline: 2px solid var(--green); outline-offset: -1px; border-color: var(--green); }
 .seat-card [aria-invalid="true"]:not([type="radio"]):not([type="checkbox"]) { border-color: var(--ink); }
-.seat-card input[type="checkbox"] { width: 20px; height: 20px; margin: 0; flex: none; accent-color: var(--green); cursor: pointer; }
+.seat-card input[type="checkbox"] { width: 18px; height: 18px; margin: 0; flex: none; accent-color: var(--green); cursor: pointer; }
 .seat-card input[type="checkbox"]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 /* Choices are chips: the real radio sits invisibly on top of each one, so taps, keys and screen readers all work. */
-.chips { clear: both; display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { clear: both; display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { position: relative; display: block; }
 .chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-.chip span { display: block; padding: 10px 14px; border: 1px solid var(--line); background: var(--bg); font-size: 16px; font-weight: 500; line-height: 1.25;
+.chip span { display: block; padding: 7px 12px; border: 1px solid var(--line); background: var(--bg); font-size: 15px; font-weight: 500; line-height: 1.25;
   transition: background-color 0.15s, border-color 0.15s, color 0.15s; }
 .chip:hover span, .chip input[aria-invalid="true"] + span { border-color: var(--ink); }
 .chip input:focus-visible + span { outline: 2px solid var(--green); outline-offset: 2px; }
 .chip.on span { background: var(--green); border-color: var(--green); color: var(--on-green); animation: pick 0.3s ease-out; }
-.reply { display: flex; gap: 8px; margin: 2px 0 0; font-family: var(--mono); font-size: 14px; line-height: 1.5; color: var(--green-text); }
+.reply { display: flex; gap: 8px; margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1.5; color: var(--green-text); }
 .reply::before { content: "↳"; flex: none; }
-.check label { display: flex; align-items: flex-start; gap: 12px; font-weight: 500; cursor: pointer; }
-.check label input { margin-top: 3px; }
-.check .err { margin-top: 8px; }
-.check + .check { margin-top: 6px; }
+.check label { display: flex; align-items: flex-start; gap: 10px; font-size: 16px; font-weight: 500; line-height: 1.4; cursor: pointer; }
+.check label input { margin-top: 2px; }
+.check .err { margin-top: 6px; }
+.check + .check { margin-top: 4px; }
 .err { margin: 0; font-size: 16px; line-height: 1.5; }
+.q .err { font-size: 14px; }
 .err span { background: var(--hi); color: var(--hi-fg); padding: 1px 6px; font-weight: 500; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
-.card-foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; border-top: 1px solid var(--line); }
-.card-note { display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 18px 20px; }
-.card-foot .hint { margin: 0; }
+.card-foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+.card-note { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 12px 16px; }
+.card-foot .hint { margin: 0; font-size: 12px; }
 .meter { display: flex; gap: 3px; }
-.meter i { width: 16px; height: 8px; background: var(--line); transition: background-color 0.25s; }
+.meter i { width: 14px; height: 6px; background: var(--line); transition: background-color 0.25s; }
 .meter i.on, .meter.full i { background: var(--green); }
 .meter.full i { animation: charge 0.6s ease-out; }
-.send { display: flex; justify-content: space-between; align-items: center; gap: 18px; min-width: 240px; padding: 24px; border: 0; border-radius: 0;
-  background: var(--green); color: var(--on-green); font: 600 21px var(--sans); letter-spacing: -0.01em; text-align: left; cursor: pointer; transition: background-color 0.25s, color 0.25s; }
+.send { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-width: 210px; padding: 16px 20px; border: 0; border-radius: 0;
+  background: var(--green); color: var(--on-green); font: 600 19px var(--sans); letter-spacing: -0.01em; text-align: left; cursor: pointer; transition: background-color 0.25s, color 0.25s; }
 .send:hover:not([aria-disabled="true"]) { filter: brightness(1.1); }
 /* Greyed out until every answer is in. Still tappable: a tap jumps to what's missing. */
 .send[aria-disabled="true"] { background: var(--cell); color: var(--muted); cursor: not-allowed; }
@@ -383,22 +396,19 @@ legend.ql { float: left; width: 100%; padding: 0; margin: 0 0 10px; }
 .send[aria-disabled="true"]:focus-visible { outline-color: var(--ink); }
 .seat-card.folded { display: flex; align-items: center; gap: 14px; width: auto; padding: 12px 16px; border-color: var(--line); background: var(--cell); }
 .seat-card.folded .mono { font-size: 13px; color: var(--muted); }
-.seat-card.skeleton { display: flex; flex-direction: column; gap: 14px; padding: 22px 20px; border-color: var(--line); }
-.skeleton i { display: block; height: 18px; background: linear-gradient(90deg, var(--cell) 30%, var(--line) 50%, var(--cell) 70%) 0 0 / 300% 100%; animation: shimmer 1.2s linear infinite; }
+.seat-card.skeleton { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-color: var(--line); }
+.skeleton i { display: block; height: 16px; background: linear-gradient(90deg, var(--cell) 30%, var(--line) 50%, var(--cell) 70%) 0 0 / 300% 100%; animation: shimmer 1.2s linear infinite; }
 .skeleton i:nth-child(1) { width: 34%; }
-.skeleton i:nth-child(2) { width: 100%; height: 50px; }
+.skeleton i:nth-child(2) { width: 100%; height: 40px; }
 .skeleton i:nth-child(3) { width: 52%; }
-.skeleton i:nth-child(4) { width: 80%; height: 42px; }
+.skeleton i:nth-child(4) { width: 80%; height: 34px; }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 @keyframes pick { 40% { transform: scale(1.06); } }
 @keyframes charge { 40% { background: var(--hi); } }
 @keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
 @media (max-width: 640px) {
-  .q { padding: 20px 16px; }
-  .card-head { padding: 10px 16px; }
   .card-foot { grid-template-columns: minmax(0, 1fr); }
-  .card-note { padding: 16px; }
-  .send { min-height: 72px; padding: 20px; font-size: 20px; }
+  .send { min-height: 56px; padding: 14px 18px; font-size: 18px; }
 }
 
 /* The bot's working steps, like a model calling tools: a chasing pixel ring while it runs, then a tick or a cross. */
