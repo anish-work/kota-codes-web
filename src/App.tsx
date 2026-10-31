@@ -42,8 +42,13 @@ export function App({ page }: { page: Page }) {
           </>
         )}
       </main>
-      <PageEdge />
-      <Footer />
+      {/* /register is the chat, filling the screen like an app, so it ends there. */}
+      {page === 'home' && (
+        <>
+          <PageEdge />
+          <Footer />
+        </>
+      )}
     </>
   );
 }
