@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { celebrate } from '../celebrate';
 import { CONFIG } from '../config';
 import { EVENT, FAQ, SITE } from '../content';
@@ -22,95 +22,56 @@ import { Pixel } from './Pixel';
 import { Directions } from './Venue';
 
 // Registration as a chat with the kota.codes bot, laid out like a messaging app: it fills the screen under the site
-// header, only the messages scroll, and you answer in the message box at the bottom or with the reply buttons under a
-// question. Nothing here is a language model; the bot's lines are written below. It asks one thing at a time, shows a
-// summary to check, saves the seat through the same Apps Script web app as before (showing each step) and prints a
-// pass. After that, the message box takes questions about the day.
+// header, only the messages scroll, and there's a message box at the bottom. Kept short: name, WhatsApp number and
+// email are typed in the message box, then one card takes the rest in a few taps and saves the seat. Typed answers
+// can be edited, like a sent message, until then. Nothing here is a language model; the bot's lines are written
+// below. It saves the seat through the same Apps Script web app as before (showing each step) and prints a pass.
+// After that, the message box takes questions about the day.
 
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sleep = (ms: number) => new Promise((done) => setTimeout(done, ms));
 const clock = () => new Date().toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
 
 const HELLO = 'Hi! I’m the kota.codes bot. Here’s what you’re signing up for:';
-const FEW = 'Seats are limited, so I’ll ask you a few quick things and hold one for you. It takes about 30 seconds.';
 
-// The questions, in the order they're asked. A parent's okay is only asked of school students.
-const ORDER = ['name', 'whatsapp', 'email', 'describes', 'parentPermission', 'aiExperience', 'laptop', 'photoConsent'] as const;
-type Field = (typeof ORDER)[number];
-type Written = 'name' | 'whatsapp' | 'email'; // answered in the message box; the rest with reply buttons
-type Choice = Exclude<Field, Written> | 'confirm' | 'change' | 'retry';
-
-const QUESTION: Record<Field, string> = {
-  name: 'First, what’s your name? Write it the way you’d like it on your name tag.',
-  whatsapp: 'What’s your WhatsApp number?',
-  email: 'And your email? I’ll send your confirmation there.',
-  describes: 'Which of these describes you best?',
-  parentPermission: 'Since you’re in school, a parent needs to say yes. Has a parent agreed you can come?',
-  aiExperience: 'Have you used AI tools before?',
-  laptop: 'Will you bring a laptop?',
-  photoConsent: 'Last one: we take photos and video at the event. Is that okay with you?',
-};
-// Asked instead when someone goes back to change an answer.
-const AGAIN: Partial<Record<Field, string>> = {
-  name: 'What should I put on your name tag?',
-  whatsapp: 'What’s the right WhatsApp number?',
-  email: 'What’s the right email?',
-};
-
-// The message box for each typed answer, so phones show the right keyboard and can fill it in.
-const BOX: Record<Written, { label: string; placeholder: string; type: string; inputMode: 'text' | 'tel' | 'email'; autoComplete: string }> = {
-  name: { label: 'Your name', placeholder: 'Type your name', type: 'text', inputMode: 'text', autoComplete: 'name' },
-  whatsapp: { label: 'Your WhatsApp number', placeholder: '10-digit number', type: 'tel', inputMode: 'tel', autoComplete: 'tel' },
-  email: { label: 'Your email', placeholder: 'you@example.com', type: 'email', inputMode: 'email', autoComplete: 'email' },
-};
-
-const PARENT_YES = 'Yes, a parent has agreed';
-const PHOTOS_OK = 'Yes, that’s fine';
-const CHANGE = 'Change something';
-const NEVER_MIND = 'Never mind';
-// What each "Change something" option asks again.
-const CHANGES: Record<string, Field> = {
-  Name: 'name',
-  'WhatsApp number': 'whatsapp',
-  Email: 'email',
-  'What describes me': 'describes',
-  'AI tools': 'aiExperience',
-  Laptop: 'laptop',
-};
-
-const OPTIONS: Record<Choice, string[]> = {
-  describes: DESCRIBES,
-  parentPermission: [PARENT_YES, 'Not yet'],
-  aiExperience: AI_EXPERIENCE,
-  laptop: LAPTOP,
-  photoConsent: [PHOTOS_OK, 'I’d rather not'],
-  confirm: ['Save my seat', CHANGE],
-  change: [...Object.keys(CHANGES), NEVER_MIND],
-  retry: ['Try again', CHANGE],
-};
-
-// The bot's one-line reply to a choice, before its next question.
-const REPLIES: Partial<Record<Field, Record<string, string>>> = {
-  describes: {
-    'College student': 'Nice. Any course, any year is welcome.',
-    [SCHOOL_STUDENT]: 'Welcome!',
-    'Coaching student': 'A morning off from the books. You’ve earned it.',
-    'Working or freelancing': 'You’ll leave with ways to save time with AI at work.',
-    'Business owner': 'You’ll see what AI can do for your business.',
-    'Teacher or parent': 'You’ll get to know the tools your students and children use.',
-    Other: 'Curious is all you need.',
+// Typed in the message box, in this order: what the bot asks, and the box, so phones show the right keyboard.
+type Written = 'name' | 'whatsapp' | 'email';
+const BOX: Record<Written, { ask: (v: FormValues) => string; label: string; placeholder: string; type: string; inputMode: 'text' | 'tel' | 'email'; autoComplete: string }> = {
+  name: {
+    ask: () => 'Seats are limited, so tell me a few things and I’ll hold one for you. First, what’s your name?',
+    label: 'Your name', placeholder: 'Type your name', type: 'text', inputMode: 'text', autoComplete: 'name',
   },
-  aiExperience: {
-    Never: 'Perfect, the morning is made for you.',
-    'A few times': 'Nice. You’ll try a lot more on the day.',
-    Often: 'Great. You’ll still pick up new tricks.',
+  whatsapp: {
+    ask: (v) => `Nice to meet you, ${firstName(v.name)}! What’s your WhatsApp number?`,
+    label: 'Your WhatsApp number', placeholder: '10-digit number', type: 'tel', inputMode: 'tel', autoComplete: 'tel',
   },
-  laptop: {
-    Yes: 'Great, bring the charger too.',
-    No: 'No problem, your phone is enough.',
-    'Phone only': 'That works, your phone is enough.',
+  email: {
+    ask: () => 'And your email? I’ll send your confirmation there.',
+    label: 'Your email', placeholder: 'you@example.com', type: 'email', inputMode: 'email', autoComplete: 'email',
   },
 };
+const NEXT: Record<Written, Written | 'card'> = { name: 'whatsapp', whatsapp: 'email', email: 'card' };
+
+// The card takes the rest with a tap each. "Still needed" names what's left, in this order.
+type Picked = Pick<FormValues, 'describes' | 'aiExperience' | 'laptop' | 'parentPermission' | 'photoConsent'>;
+const NO_PICKS: Picked = { describes: '', aiExperience: '', laptop: '', parentPermission: false, photoConsent: false };
+const NEEDED: [keyof Picked, string][] = [
+  ['describes', 'what describes you'],
+  ['aiExperience', 'ai tools'],
+  ['laptop', 'laptop'],
+  ['parentPermission', 'parent’s okay'],
+  ['photoConsent', 'photo okay'],
+];
+const CARD = 'Last bit: tap what fits, and I’ll save your seat.';
+
+// The card's answers, sent as the person's message.
+const picksLine = (p: Picked) =>
+  [
+    p.describes === SCHOOL_STUDENT ? `${p.describes}, a parent said yes` : p.describes,
+    `AI tools: ${p.aiExperience.toLowerCase()}`,
+    `laptop: ${p.laptop.toLowerCase()}`,
+    'photos are fine',
+  ].join(' · ');
 
 // After signing up, typed questions are matched by keyword and answered from the FAQ where it has one.
 const faq = (q: string) => FAQ.find((f) => f.q === q)?.a;
@@ -257,28 +218,6 @@ function EventCard() {
   );
 }
 
-function Summary({ v }: { v: FormValues }) {
-  const rows = [
-    ['name', v.name.trim()],
-    ['whatsapp', normalizePhone(v.whatsapp) ?? v.whatsapp],
-    ['email', v.email.trim()],
-    ['you’re', v.describes === SCHOOL_STUDENT ? `${v.describes}, a parent said yes` : v.describes],
-    ['ai tools', v.aiExperience],
-    ['laptop', v.laptop],
-    ['photos', 'okay'],
-  ];
-  return (
-    <dl className="summary">
-      {rows.map(([label, value]) => (
-        <div key={label}>
-          <dt>{label}</dt>
-          <dd>{value}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
 // Link buttons under a message, like a business chat's. The WhatsApp community comes with every result, so nobody
 // leaves without a way to stay in touch.
 function Links({ which }: { which: 'done' | 'closed' | 'failed' }) {
@@ -300,23 +239,93 @@ function Links({ which }: { which: 'done' | 'closed' | 'failed' }) {
   );
 }
 
+type ChoiceName = 'describes' | 'aiExperience' | 'laptop';
+
+function Group(props: { legend: string; name: ChoiceName; options: string[]; value: string; onPick: (name: ChoiceName, value: string) => void }) {
+  const { legend, name, options, value, onPick } = props;
+  return (
+    <fieldset className="grp">
+      <legend>{legend}</legend>
+      <div className="chips">
+        {options.map((o) => (
+          <label key={o} className={value === o ? 'chip on' : 'chip'}>
+            <input type="radio" name={name} value={o} checked={value === o} onChange={() => onPick(name, o)} />
+            <span>{o}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+// The questions answered with a tap, in one card. The button stays greyed out until they're all done; tapping it
+// early lights up what's still needed.
+function AskCard({ picked, set, tried, onSave }: { picked: Picked; set: (p: Picked) => void; tried: boolean; onSave: () => void }) {
+  const found = validate({ ...EMPTY, ...picked });
+  const missing = NEEDED.filter(([k]) => found[k]);
+  const pick = (name: ChoiceName, value: string) => set({ ...picked, [name]: value });
+  return (
+    <div className="ask-card">
+      <p>{CARD}</p>
+      <Group legend="you are" name="describes" options={DESCRIBES} value={picked.describes} onPick={pick} />
+      <Group legend="used ai tools before?" name="aiExperience" options={AI_EXPERIENCE} value={picked.aiExperience} onPick={pick} />
+      <Group legend="bringing a laptop?" name="laptop" options={LAPTOP} value={picked.laptop} onPick={pick} />
+      {picked.describes === SCHOOL_STUDENT && (
+        <label className="tick">
+          <input type="checkbox" checked={picked.parentPermission} onChange={(e) => set({ ...picked, parentPermission: e.target.checked })} />
+          <span>I’m under 18 and a parent has agreed I can come</span>
+        </label>
+      )}
+      <label className="tick">
+        <input type="checkbox" checked={picked.photoConsent} onChange={(e) => set({ ...picked, photoConsent: e.target.checked })} />
+        <span>I’m okay with photos and video at the event</span>
+      </label>
+      <button type="button" className={missing.length ? 'save' : 'save nudge'} aria-disabled={missing.length > 0 || undefined}
+        aria-describedby="still" onClick={onSave}>
+        <span>Save my seat</span>
+        <Arrow />
+      </button>
+      <p id="still" className={tried && missing.length ? 'still loud' : 'still'}>
+        {missing.length
+          ? `still needed: ${missing.map(([, label]) => label).join(', ')}`
+          : 'all set. free entry, and we only use your details to run kota codes events.'}
+      </p>
+    </div>
+  );
+}
+
 type Body =
-  | { type: 'text'; text: string; title?: string }
+  | { type: 'text'; text: string; title?: string; field?: Written; edited?: boolean }
   | { type: 'event' }
-  | { type: 'summary'; v: FormValues }
+  | { type: 'card'; sent?: boolean }
   | { type: 'steps'; attempt: number }
   | { type: 'pass'; v: FormValues; stamp: string }
   | { type: 'links'; which: 'done' | 'closed' | 'failed' };
 type Msg = { id: number; from: 'bot' | 'you'; time: string; body: Body };
-type Ask = { kind: 'write'; field: Written } | { kind: 'choose'; key: Choice } | { kind: 'chat' } | null;
+type Ask = { kind: 'write'; field: Written } | { kind: 'card' } | { kind: 'retry' } | { kind: 'chat' } | null;
 
 const line = (text: string, title?: string): Body => ({ type: 'text', text, title });
 
-// One bubble. Only the first of a run from the same side gets a tail. The time sits at the end of the text.
-function Message({ m, tail, answer, onSaved }: { m: Msg; tail: boolean; answer?: Answer; onSaved: (a: Answer) => void }) {
+// One bubble. Only the first of a run from the same side gets a tail. The time sits at the end of the text, with an
+// edit button on typed answers while they can still change.
+function Message(props: {
+  m: Msg;
+  tail: boolean;
+  answer?: Answer;
+  onSaved: (a: Answer) => void;
+  card: { picked: Picked; set: (p: Picked) => void; tried: boolean; onSave: () => void };
+  onEdit?: (field: Written) => void;
+}) {
+  const { m, tail, answer, onSaved, card, onEdit } = props;
   const b = m.body;
   const time = (
     <span className="time">
+      {b.type === 'text' && b.field && onEdit && (
+        <button type="button" className="edit" aria-label={`Edit ${BOX[b.field].label.toLowerCase()}`} onClick={() => onEdit(b.field!)}>
+          edit
+        </button>
+      )}
+      {b.type === 'text' && b.edited && 'edited '}
       {m.time}
       {m.from === 'you' && (
         <span className="ticks" aria-hidden="true">
@@ -327,7 +336,7 @@ function Message({ m, tail, answer, onSaved }: { m: Msg; tail: boolean; answer?:
   );
   return (
     <div className={`msg ${m.from}`}>
-      <div className={tail ? `bubble ${b.type} tail` : `bubble ${b.type}`}>
+      <div className={`bubble ${b.type}${tail ? ' tail' : ''}${b.type === 'card' && !b.sent ? ' open' : ''}`}>
         {b.type === 'text' ? (
           <>
             {b.title && <p className="title">{b.title}</p>}
@@ -339,7 +348,7 @@ function Message({ m, tail, answer, onSaved }: { m: Msg; tail: boolean; answer?:
         ) : (
           <>
             {b.type === 'event' && <EventCard />}
-            {b.type === 'summary' && <Summary v={b.v} />}
+            {b.type === 'card' && (b.sent ? <p>{CARD}</p> : <AskCard {...card} />)}
             {b.type === 'steps' && <Steps answer={answer} onDone={() => answer && onSaved(answer)} />}
             {b.type === 'pass' && (
               <Pass name={b.v.name.trim()} role={b.v.describes === 'Other' ? 'Anyone curious' : b.v.describes}
@@ -359,10 +368,13 @@ export function RegisterChat() {
   const [typing, setTyping] = useState(true); // prerendered mid-typing, so the page opens with the bot about to talk
   const [ask, setAsk] = useState<Ask>(null); // what the bot is waiting for
   const [draft, setDraft] = useState('');
+  const [picked, setPicked] = useState<Picked>(NO_PICKS);
+  const [tried, setTried] = useState(false); // tapped Save with answers missing
+  const [editing, setEditing] = useState<Written | null>(null);
+  const [locked, setLocked] = useState(false); // saving or saved, so answers can't change
   const [answers, setAnswers] = useState<Record<number, Answer>>({}); // the sign-up sheet's reply to each attempt
   const [asked, setAsked] = useState<string[]>([]); // quick replies already used
   const v = useRef<FormValues>(EMPTY);
-  const editing = useRef(false); // changing one answer from the summary
   const engaged = useRef(false); // they've answered something, so focus can follow the questions
   const started = useRef(false);
   const ids = useRef(0);
@@ -371,18 +383,16 @@ export function RegisterChat() {
   const chat = useRef<HTMLDivElement>(null);
   const thread = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLInputElement>(null);
-  const picks = useRef<HTMLDivElement>(null);
 
   const push = (from: Msg['from'], body: Body) =>
     setMsgs((list) => [...list, { id: ids.current++, from, time: clock(), body }]);
 
-  // The bot says each thing in turn, typing for a moment first. Resolves once it's all out, for the next ask.
+  // The bot says each thing in turn, typing for a moment first. Resolves once it's all out.
   function say(...bodies: Body[]) {
-    setAsk(null);
     queue.current = queue.current.then(async () => {
       for (const body of bodies) {
         setTyping(true);
-        await sleep(reducedMotion() ? 0 : body.type === 'text' ? Math.min(1400, 400 + body.text.length * 12) : 800);
+        await sleep(reducedMotion() ? 0 : body.type === 'text' ? Math.min(900, 300 + body.text.length * 8) : 600);
         setTyping(false);
         push('bot', body);
       }
@@ -390,91 +400,75 @@ export function RegisterChat() {
     return queue.current;
   }
 
-  const choose = (key: Choice) => setAsk({ kind: 'choose', key });
-
-  function askFor(field: Field | 'summary', ...lead: Body[]) {
-    if (field === 'summary') {
-      editing.current = false;
-      say(...lead, line('Here’s what I’ve got. Shall I save your seat?'), { type: 'summary', v: v.current }).then(() => choose('confirm'));
-      return;
-    }
-    const q =
-      (editing.current && AGAIN[field]) ||
-      (field === 'whatsapp' ? `Nice to meet you, ${firstName(v.current.name)}! ${QUESTION.whatsapp}` : QUESTION[field]);
-    say(...lead, line(q)).then(() =>
-      field === 'name' || field === 'whatsapp' || field === 'email' ? setAsk({ kind: 'write', field }) : choose(field),
-    );
-  }
-
-  // After an answer: the next question, or back to the summary when it was a change.
-  function next(after: Field, ...lead: Body[]) {
-    const school = v.current.describes === SCHOOL_STUDENT;
-    if (after === 'describes' && school && !v.current.parentPermission) return askFor('parentPermission', ...lead);
-    if (editing.current) return askFor('summary', ...lead);
-    const rest = ORDER.slice(ORDER.indexOf(after) + 1).filter((f) => f !== 'parentPermission' || school);
-    askFor(rest[0] ?? 'summary', ...lead);
+  function askFor(next: Written | 'card') {
+    setAsk(null);
+    if (next === 'card') say({ type: 'card' }).then(() => setAsk({ kind: 'card' }));
+    else say(line(BOX[next].ask(v.current))).then(() => setAsk({ kind: 'write', field: next }));
   }
 
   function onSend(e: FormEvent) {
     e.preventDefault();
     const said = draft.trim();
-    if (!said || typing || !ask || ask.kind === 'choose') return;
+    const field = editing ?? (ask?.kind === 'write' ? ask.field : null);
+    if (!said || (!editing && (typing || !ask || (!field && ask.kind !== 'chat')))) return;
     engaged.current = true;
     setDraft('');
-    push('you', line(said));
-    if (ask.kind === 'chat') return reply(said);
-    const { field } = ask;
+    if (!field) {
+      push('you', line(said));
+      return reply(said);
+    }
     const problem = validate({ ...v.current, [field]: said })[field];
+    if (editing) {
+      // An edit changes the earlier message in place, like editing a sent message.
+      if (problem) {
+        setDraft(said);
+        say(line(problem));
+        return;
+      }
+      v.current = { ...v.current, [field]: said };
+      setMsgs((list) =>
+        list.map((m) => (m.body.type === 'text' && m.body.field === field ? { ...m, body: { ...m.body, text: said, edited: true } } : m)),
+      );
+      setEditing(null);
+      return;
+    }
+    push('you', problem ? line(said) : { type: 'text', text: said, field });
+    setAsk(null);
     if (problem) {
       say(line(problem)).then(() => setAsk({ kind: 'write', field }));
       return;
     }
     v.current = { ...v.current, [field]: said };
-    next(field);
+    askFor(NEXT[field]);
   }
 
-  function pick(option: string) {
-    if (ask?.kind !== 'choose') return;
-    const { key } = ask;
-    engaged.current = true;
-    push('you', line(option));
-    switch (key) {
-      case 'describes':
-      case 'aiExperience':
-      case 'laptop': {
-        v.current = { ...v.current, [key]: option };
-        const said = REPLIES[key]?.[option];
-        return next(key, ...(said ? [line(said)] : []));
-      }
-      case 'parentPermission':
-        if (option !== PARENT_YES) {
-          say(line('No problem. Check with a parent first, then tap yes.')).then(() => choose(key));
-          return;
-        }
-        v.current = { ...v.current, parentPermission: true };
-        return next(key, line('Thanks!'));
-      case 'photoConsent':
-        if (option !== PHOTOS_OK) {
-          say(line('I understand. We need everyone’s okay for photos to save a seat, so I can’t register you without it. If you change your mind, tap yes.')).then(() => choose(key));
-          return;
-        }
-        v.current = { ...v.current, photoConsent: true };
-        return next(key);
-      case 'change':
-        if (option === NEVER_MIND) return askFor('summary');
-        editing.current = true;
-        return askFor(CHANGES[option], line('Sure.'));
-      default: // the summary's buttons, or Try again after an error
-        if (option === CHANGE) {
-          say(line('Sure. What would you like to change?')).then(() => choose('change'));
-          return;
-        }
-        save();
+  function edit(field: Written) {
+    setEditing(field);
+    setDraft(v.current[field]);
+  }
+
+  function stopEditing() {
+    setEditing(null);
+    setDraft('');
+  }
+
+  function saveCard() {
+    const found = validate({ ...EMPTY, ...picked });
+    if (NEEDED.some(([k]) => found[k])) {
+      setTried(true);
+      return;
     }
+    engaged.current = true;
+    v.current = { ...v.current, ...picked };
+    setMsgs((list) => list.map((m) => (m.body.type === 'card' ? { ...m, body: { type: 'card', sent: true } } : m)));
+    push('you', line(picksLine(picked)));
+    save();
   }
 
   async function save() {
     setAsk(null);
+    setEditing(null);
+    setLocked(true);
     thread.current?.focus({ preventScroll: true }); // the button just tapped goes away; keep focus in the chat
     const id = ++attempts.current;
     await queue.current;
@@ -487,9 +481,10 @@ export function RegisterChat() {
   async function saved(answer: Answer) {
     const name = firstName(v.current.name);
     if (answer.kind === 'failed') {
+      setLocked(false);
       const links: Body[] = CONFIG.whatsappCommunityUrl ? [{ type: 'links', which: 'failed' }] : [];
       await say(line(answer.message, 'That didn’t go through.'), ...links);
-      return choose('retry');
+      return setAsk({ kind: 'retry' });
     }
     const { status } = answer.result;
     const o = OUTCOME[status] ?? OUTCOME.registered;
@@ -505,8 +500,14 @@ export function RegisterChat() {
   }
 
   function reply(q: string) {
+    setAsk(null);
     const topic = TOPICS.find(([words, a]) => a && words.test(q));
     say(line(topic?.[1] ?? NOT_SURE)).then(() => setAsk({ kind: 'chat' }));
+  }
+
+  function retry() {
+    push('you', line('Try again'));
+    save();
   }
 
   function quickAsk(q: string) {
@@ -519,7 +520,7 @@ export function RegisterChat() {
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    say(line(HELLO), { type: 'event' }, line(FEW)).then(() => askFor('name'));
+    say(line(HELLO), { type: 'event' }).then(() => askFor('name'));
   }, []);
 
   // Fill the screen under the site header, like an app, and shrink with the on-screen keyboard so the message box
@@ -540,33 +541,42 @@ export function RegisterChat() {
     };
   }, []);
 
+  // The message box is enabled for an edit on the next render, so focus it then.
+  useEffect(() => {
+    if (editing) box.current?.focus();
+  }, [editing]);
+
   // Keep the newest message in view.
   useEffect(() => {
     const t = thread.current;
     t?.scrollTo({ top: t.scrollHeight, behavior: reducedMotion() ? 'auto' : 'smooth' });
   }, [msgs.length, typing, ask]);
 
-  // Once someone is answering, focus follows the questions: the message box for typed answers, else the first button.
+  // Once someone is answering, focus follows the questions: the message box for typed answers, and with a keyboard
+  // and mouse, the card's first choice or Try again. (On a touch screen a focused chip would look already picked.)
   useEffect(() => {
     if (!engaged.current) return;
     if (ask?.kind === 'write') box.current?.focus({ preventScroll: true });
-    else if (ask?.kind === 'choose') picks.current?.querySelector('button')?.focus({ preventScroll: true });
+    else if (ask && matchMedia('(pointer: fine)').matches)
+      thread.current?.querySelector<HTMLElement>('.ask-card input, .picks button')?.focus({ preventScroll: true });
   }, [ask]);
 
-  const written = ask?.kind === 'write' ? BOX[ask.field] : null;
-  const open = !typing && (ask?.kind === 'write' || ask?.kind === 'chat');
-  const options = ask?.kind === 'choose' ? OPTIONS[ask.key] : [];
-  // Short answers share a row; long ones get a row each.
-  const cols = options.length <= 3 && options.every((o) => o.length <= 12) ? options.length : options.some((o) => o.length > 18) ? 1 : 2;
+  const field = editing ?? (ask?.kind === 'write' ? ask.field : null);
+  const written = field ? BOX[field] : null;
+  const open = !!editing || (!typing && (ask?.kind === 'write' || ask?.kind === 'chat'));
   const quick = QUICK.filter((q) => !asked.includes(q));
   const last = msgs[msgs.length - 1];
+  const hint =
+    ask?.kind === 'chat' ? 'Ask about the day' : ask?.kind === 'card' ? 'Tap your answers above' : ask?.kind === 'retry' ? 'Tap Try again above' : 'Message';
+  const cardProps = { picked, set: setPicked, tried, onSave: saveCard };
 
   return (
     <div className="chat" ref={chat}>
       <div className="thread" ref={thread} role="log" aria-label="Chat with the kota.codes bot" tabIndex={-1}>
         {msgs.map((m, i) => (
           <Message key={m.id} m={m} tail={i === 0 || msgs[i - 1].from !== m.from}
-            answer={m.body.type === 'steps' ? answers[m.body.attempt] : undefined} onSaved={saved} />
+            answer={m.body.type === 'steps' ? answers[m.body.attempt] : undefined} onSaved={saved} card={cardProps}
+            onEdit={locked ? undefined : edit} />
         ))}
         {typing && (
           <div className="msg bot">
@@ -580,13 +590,11 @@ export function RegisterChat() {
             </div>
           </div>
         )}
-        {options.length > 0 && !typing && (
-          <div className="picks" ref={picks} role="group" aria-label="Your answer" style={{ '--cols': cols } as CSSProperties}>
-            {options.map((o) => (
-              <button key={o} type="button" onClick={() => pick(o)}>
-                {o}
-              </button>
-            ))}
+        {ask?.kind === 'retry' && !typing && (
+          <div className="picks" role="group" aria-label="Your answer">
+            <button type="button" onClick={retry}>
+              Try again
+            </button>
           </div>
         )}
         <noscript>
@@ -604,14 +612,21 @@ export function RegisterChat() {
             ))}
           </div>
         )}
+        {editing && (
+          <p className="editing">
+            <span>editing your {BOX[editing].label.replace('Your ', '').toLowerCase()}</span>
+            <button type="button" onClick={stopEditing}>
+              cancel
+            </button>
+          </p>
+        )}
         <form className="composer" onSubmit={onSend}>
           <label className="sr-only" htmlFor="say">
-            {written?.label ?? (ask?.kind === 'chat' ? 'Ask about the day' : 'Message')}
+            {written?.label ?? hint}
           </label>
           <input id="say" ref={box} value={draft} onChange={(e) => setDraft(e.target.value)} disabled={!open}
             type={written?.type ?? 'text'} inputMode={written?.inputMode ?? 'text'} autoComplete={written?.autoComplete ?? 'off'}
-            enterKeyHint="send" maxLength={150}
-            placeholder={written?.placeholder ?? (ask?.kind === 'chat' ? 'Ask about the day' : ask?.kind === 'choose' ? 'Tap an answer above' : 'Message')} />
+            enterKeyHint="send" maxLength={150} placeholder={written?.placeholder ?? hint} />
           <button type="submit" disabled={!open || !draft.trim()} aria-label="Send">
             <Arrow />
           </button>
