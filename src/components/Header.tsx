@@ -10,11 +10,12 @@ const LINKS = [
   ['/#faq', 'FAQ'],
 ];
 
+// On /register the chat is the whole page, so there's no "Save your seat" button to send people to it.
 export function Header({ page }: { page: Page }) {
   const home = page === 'home';
   return (
     <header className="band" style={{ borderTop: 0 }}>
-      <nav className="frame cells nav" aria-label="Main">
+      <nav className={home ? 'frame cells nav' : 'frame cells nav no-cta'} aria-label="Main">
         <a className="home" href={home ? '#top' : '/'} aria-label={home ? 'kota.codes, back to top' : 'kota.codes home'}>
           <Lockup />
         </a>
@@ -23,9 +24,11 @@ export function Header({ page }: { page: Page }) {
             {label}
           </a>
         ))}
-        <a className="cta nudge" href={home ? '/register' : '#register-form'}>
-          Save your seat <Arrow />
-        </a>
+        {home && (
+          <a className="cta nudge" href="/register">
+            Save your seat <Arrow />
+          </a>
+        )}
       </nav>
     </header>
   );
