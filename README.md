@@ -14,7 +14,7 @@ Deployed on Vercel: `vercel.json` sets the build (`npm run build` -> `dist/`) an
 ## Pages
 
 - `/`: the community home page. A status bar, the wordmark, then about/, meetup-01/ (a short recap), whats-next/, who-can-come/ and get-involved/ (follow @kota.codes on Instagram).
-- `/meetup-01`: Meetup 01 (Saturday 7 November 2026, iStart Nest, Kota) told after the fact: how-it-went/, speakers/ with the two talks, the-day/ and the follow block.
+- `/meetup-01`: Meetup 01 (Saturday 7 November 2026, iStart Nest, Kota) told after the fact: how-it-went/, photos/ (a grid; any picture opens a full-screen carousel with arrows, swipe, the arrow keys and a thumbnail strip), speakers/ with the two talks, the-day/ and the follow block.
 - `/register`: says Meetup 01 registration is closed and points to @kota.codes for Meetup 02. Kept out of search (`noindex`) and out of the sitemap.
 
 `scripts/prerender.js` renders each page to `dist/index.html`, `dist/meetup-01.html` and `dist/register.html`; `cleanUrls` in `vercel.json` serves them without the extension.
@@ -27,6 +27,7 @@ Deployed on Vercel: `vercel.json` sets the build (`npm run build` -> `dist/`) an
 - `src/weave.ts`: the Kota Doria weave (logo mark, cloth swatch, woven border), built from the brand board's proportions. The favicon is generated from it at build time.
 - `src/illustrations/`: "Kota in pixels" SVGs from the graphics artifact, rendered by `src/components/Pixel.tsx` at whole-number scales.
 - `src/photos/`: speaker photos, cropped to 4:5 at 640×800 WebP, set on each speaker in `SPEAKERS` in `src/content.ts`.
+- `src/photos/meetup-01/`: the Meetup 01 photos and videos for photos/ on `/meetup-01`, listed with their captions in `GALLERY` in `src/content.ts`. Each photo has `<id>-640.webp` (grid) and `<id>-1800.webp` (lightbox, long edge 1800); each video is `<id>.mp4` (720p H.264, HDR tone-mapped to SDR) with a poster in the same two sizes. EXIF and location data are stripped. To add one, make the files the same way and add a line to `GALLERY`; the grid fills 4, 3 or 2 across, so keep the count of tiles (a wide tile counts as two) a multiple of 12 to avoid gaps.
 - `public/`: `og-image.png` (1200×630 share image: the woven mark, wordmark and tagline, no date, so it stays right between meetups), `apple-touch-icon.png`, `robots.txt`.
 
 If the site moves off `https://kota.codes`, update `SITE.url`, `index.html` and `public/robots.txt`.

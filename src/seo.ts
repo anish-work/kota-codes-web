@@ -1,5 +1,5 @@
 import type { Page } from './App';
-import { MEETUP_01, SITE, SPEAKERS } from './content';
+import { GALLERY, MEETUP_01, SITE, SPEAKERS } from './content';
 
 // JSON-LD structured data, injected into each page's <head> at prerender time.
 // Every page names the organisation; /meetup-01 also describes the event, which keeps it in Google's event results.
@@ -34,7 +34,7 @@ export function structuredData(page: Page) {
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     isAccessibleForFree: true,
     inLanguage: 'en-IN',
-    image: [`${SITE.url}/og-image.png`],
+    image: [`${SITE.url}${GALLERY[0].full}`, `${SITE.url}/og-image.png`], // the group photo, then the share image
     url: `${SITE.url}/meetup-01`,
     location: {
       '@type': 'Place',

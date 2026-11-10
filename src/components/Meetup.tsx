@@ -3,15 +3,17 @@ import { useFitText } from '../fit';
 import { Arrow } from './Arrow';
 import { Day } from './Day';
 import { GetInvolved } from './Follow';
+import { Gallery } from './Gallery';
 import { SectionHead } from './SectionHead';
 import { Speakers } from './Speakers';
 
-// /meetup-01: what happened on the day. Photos go in how-it-went/ once there are some.
+// /meetup-01: what happened on the day.
 export function MeetupPage() {
   return (
     <>
       <MeetupHead />
       <HowItWent />
+      <Gallery />
       <Speakers />
       <Day />
       <GetInvolved />
