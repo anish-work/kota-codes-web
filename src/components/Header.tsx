@@ -1,34 +1,27 @@
 import type { Page } from '../App';
-import { Arrow } from './Arrow';
 import { Lockup } from './Logo';
 
-// Root-relative, so they work from /register too. On the home page they only scroll.
-const LINKS = [
+// Root-relative, so they work from every page. On the home page the anchors only scroll.
+const LINKS: [href: string, label: string, page?: Page][] = [
   ['/#about', 'About'],
-  ['/#speakers', 'Speakers'],
-  ['/#day', 'The day'],
-  ['/#faq', 'FAQ'],
+  ['/meetup-01', 'Meetup 01', 'meetup'],
+  ['/#whats-next', 'What’s next'],
+  ['/#get-involved', 'Get involved'],
 ];
 
-// On /register the chat is the whole page, so there's no "Save your seat" button to send people to it.
 export function Header({ page }: { page: Page }) {
   const home = page === 'home';
   return (
     <header className="band" style={{ borderTop: 0 }}>
-      <nav className={home ? 'frame cells nav' : 'frame cells nav no-cta'} aria-label="Main">
+      <nav className="frame cells nav" aria-label="Main">
         <a className="home" href={home ? '#top' : '/'} aria-label={home ? 'kota.codes, back to top' : 'kota.codes home'}>
           <Lockup />
         </a>
-        {LINKS.map(([href, label]) => (
-          <a key={href} className="link" href={href}>
+        {LINKS.map(([href, label, to]) => (
+          <a key={href} className="link" href={href} aria-current={to === page ? 'page' : undefined}>
             {label}
           </a>
         ))}
-        {home && (
-          <a className="cta nudge" href="/register">
-            Save your seat <Arrow />
-          </a>
-        )}
       </nav>
     </header>
   );

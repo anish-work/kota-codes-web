@@ -1,6 +1,6 @@
 # kota.codes
 
-Landing page for Kota Codes Meetup #01. Vite + React + TypeScript, prerendered to static HTML for SEO.
+Home of Kota Codes, Kota’s AI & tech community. Vite + React + TypeScript, prerendered to static HTML for SEO.
 
 ```sh
 npm install
@@ -11,25 +11,36 @@ npm run preview  # serve dist/
 
 Deployed on Vercel: `vercel.json` sets the build (`npm run build` -> `dist/`) and cache headers. Every push to `main` deploys to production; other branches get preview URLs.
 
+## Pages
+
+- `/`: the community home page. A status bar, the wordmark, then about/, meetup-01/ (a short recap), whats-next/, who-can-come/ and get-involved/ (follow @kota.codes on Instagram).
+- `/meetup-01`: Meetup 01 (Saturday 7 November 2026, iStart Nest, Kota) told after the fact: how-it-went/, speakers/ with the two talks, the-day/ and the follow block.
+- `/register`: says Meetup 01 registration is closed and points to @kota.codes for Meetup 02. Kept out of search (`noindex`) and out of the sitemap.
+
+`scripts/prerender.js` renders each page to `dist/index.html`, `dist/meetup-01.html` and `dist/register.html`; `cleanUrls` in `vercel.json` serves them without the extension.
+
 ## Where things live
 
-- `src/content.ts`: all copy and event facts (date, schedule, speakers, FAQ). Edit here; the page, meta tags and structured data follow.
-- `src/seo.ts`: JSON-LD (Organization, Event, FAQPage) for Google rich results.
-- `index.html`: title, description, canonical, Open Graph and Twitter tags.
-- `scripts/prerender.js`: renders each page (`/` and `/register`) to HTML at build time and writes `sitemap.xml`.
+- `src/content.ts`: all copy and facts. `SITE` (name, tagline, Instagram), `STATUS` (the black bar), `PAGES` (each page's title and description), `MEETUP_01` (date, venue), and every section's text. Edit here; the pages, head tags and structured data follow.
+- `src/seo.ts`: JSON-LD: Organization on every page, WebSite on `/`, and the Meetup 01 Event on `/meetup-01`.
+- `index.html`: the head tags. Title, description and URLs are replaced per page from `PAGES` at build time.
 - `src/weave.ts`: the Kota Doria weave (logo mark, cloth swatch, woven border), built from the brand board's proportions. The favicon is generated from it at build time.
 - `src/illustrations/`: "Kota in pixels" SVGs from the graphics artifact, rendered by `src/components/Pixel.tsx` at whole-number scales.
-- `src/photos/`: speaker photos, cropped to 4:5 (the card's shape) at 640×800 WebP, and set on each speaker in `SPEAKERS` in `src/content.ts`. A speaker without a photo shows their initial instead.
-- `public/`: `og-image.png` (1200×630 share image; its top-right line spells out the date and venue, so redraw it when they change), `apple-touch-icon.png`, `robots.txt`.
+- `src/photos/`: speaker photos, cropped to 4:5 at 640×800 WebP, set on each speaker in `SPEAKERS` in `src/content.ts`.
+- `public/`: `og-image.png` (1200×630 share image: the woven mark, wordmark and tagline, no date, so it stays right between meetups), `apple-touch-icon.png`, `robots.txt`.
 
-Date and time: `EVENT.start`/`end` and the labels in `src/content.ts` (setting `start` to null hides the countdown and Google's event listing). Venue: `CONFIG.venue` in `src/config.ts`: name and address, `mapsUrl` (the Google Maps share link every "Get directions" button opens) and `coordinates` (`[latitude, longitude]`, which turn on the map in the venue section). The confirmation emails read the same facts from the Sheet's Settings tab.
 If the site moves off `https://kota.codes`, update `SITE.url`, `index.html` and `public/robots.txt`.
 
-## Registration form
+## Next meetup
 
-The form lives on its own page, `/register` (the home page's "Save your seat" buttons link there), as a chat with the kota.codes bot laid out like a messaging app: it fills the screen under the site header, only the messages scroll, and there's a message box at the bottom. The bot shows the day on a green card, then asks one thing at a time: name, WhatsApp number and email are typed in the message box (a wrong number or email gets a reply asking again), and the rest are reply buttons under the question. It shows a summary with Save my seat and Change something, shows its steps while the seat is saved, then prints a pass with a woven band made from the person's name. After that the message box answers questions about the day from the FAQ, by keyword. The bot's lines are written in `src/components/RegisterChat.tsx`; there's no AI model behind it. Each signup is posted to a Google Apps Script web app, which appends a row to a Google Sheet and sends a confirmation email. Front end: `src/components/RegisterChat.tsx` (the conversation), `Pass.tsx`, and `src/registration.ts` (answers, checks, sending). Settings: `src/config.ts`. Backend: `apps-script/Code.gs`.
+When Meetup 02 has a date and venue: update `STATUS` and `NEXT` in `src/content.ts`, and the home page description in `PAGES` and `index.html`. A `/meetup-02` page can follow the `/meetup-01` pattern (`src/components/Meetup.tsx`, a `PAGES` entry, a route in `pageFor` in `src/App.tsx`).
 
-`/register` is prerendered to `dist/register.html` and served without the extension by `cleanUrls` in `vercel.json`. Its title and share text are `REGISTER_PAGE` in `src/content.ts`.
+## Registration (Meetup 01, closed)
+
+The `/register` chat and its Google Sheet backend were taken off the site after Meetup 01. The front end (the chat, the pass, the countdown and the venue map) is in git history: the last commit with it is `58ece5b`. The Apps Script backend stays in `apps-script/Code.gs`, and the Sheet keeps the Meetup 01 registrations. The notes below describe that setup, for reuse.
+
+Until Meetup 01, `/register` was a chat with the kota.codes bot that asked one thing at a time and printed a pass. Each signup was posted to a Google Apps Script web app, which appended a row to a Google Sheet and sent a confirmation email. Front end (in `58ece5b`): `src/components/RegisterChat.tsx`, `Pass.tsx`, `src/registration.ts`, settings in `src/config.ts`. Backend: `apps-script/Code.gs`.
+
 
 ### The Sheet
 
@@ -49,7 +60,7 @@ The Sheets phone app has no Apps Script menu, so use the phone's browser in desk
 2. **Paste the script.** In `Code.gs`, select all, delete, and paste `apps-script/Code.gs` from this repo as is. Nothing in it needs editing; settings come from the Settings tab. Tap Save.
 3. **Deploy.** Deploy > New deployment > gear icon > Web app. Execute as: **Me**. Who has access: **Anyone**. Deploy, then authorise when asked (Google warns the app is unverified because it's yours: Advanced > Go to project (unsafe) > Allow). Copy the web app URL ending in `/exec`.
 4. **Check it.** Open the URL: you should see `{"ok":true,"status":"ready",...}`.
-5. **Connect the page.** Put the URL in `webAppUrl` in `src/config.ts`, plus `whatsappCommunityUrl` (the WhatsApp community invite link, shown after every signup attempt) and the venue to match the Settings tab. Commit and push; Vercel redeploys. (From a phone, the GitHub site's pencil icon on the file works, or send the URL to Claude.)
+5. **Connect the page.** Put the URL in `webAppUrl` in `src/config.ts` (restored from `58ece5b`), plus `whatsappCommunityUrl` (the WhatsApp community invite link, shown after every signup attempt) and the venue to match the Settings tab. Commit and push; Vercel redeploys. (From a phone, the GitHub site's pencil icon on the file works, or send the URL to Claude.)
 
 **Every change to the script needs a new deployment version**, or the live URL keeps running the old code: Deploy > Manage deployments > pencil icon > Version: New version > Deploy. The URL stays the same. Changes in the Settings tab don't need this.
 

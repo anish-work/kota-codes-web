@@ -1,47 +1,46 @@
-import { CONFIG } from './config';
-import { EVENT, FAQ, SITE, SPEAKERS } from './content';
+import type { Page } from './App';
+import { MEETUP_01, SITE, SPEAKERS } from './content';
 
-// JSON-LD structured data, injected into <head> at prerender time.
-// Event + FAQPage make the page eligible for Google's event and FAQ rich results.
-export function structuredData() {
+// JSON-LD structured data, injected into each page's <head> at prerender time.
+// Every page names the organisation; /meetup-01 also describes the event, which keeps it in Google's event results.
+export function structuredData(page: Page) {
   const organization = {
     '@type': 'Organization',
     '@id': `${SITE.url}/#org`,
     name: SITE.name,
+    description: SITE.tagline,
     url: SITE.url,
     logo: `${SITE.url}/favicon.svg`,
     sameAs: [SITE.instagram],
+    areaServed: { '@type': 'City', name: MEETUP_01.city },
   };
 
-  const event = EVENT.start && {
+  const website = {
+    '@type': 'WebSite',
+    '@id': `${SITE.url}/#website`,
+    name: SITE.name,
+    url: SITE.url,
+    publisher: { '@id': `${SITE.url}/#org` },
+    inLanguage: 'en-IN',
+  };
+
+  const event = {
     '@type': 'Event',
-    name: EVENT.name,
-    description: EVENT.description,
-    startDate: EVENT.start,
-    endDate: EVENT.end,
-    eventStatus: 'https://schema.org/EventScheduled',
+    name: MEETUP_01.name,
+    description: MEETUP_01.description,
+    startDate: MEETUP_01.start,
+    endDate: MEETUP_01.end,
+    eventStatus: 'https://schema.org/EventScheduled', // it went ahead as planned; schema.org has no "completed" status
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     isAccessibleForFree: true,
     inLanguage: 'en-IN',
     image: [`${SITE.url}/og-image.png`],
-    url: SITE.url,
+    url: `${SITE.url}/meetup-01`,
     location: {
       '@type': 'Place',
-      name: EVENT.venue ?? `${EVENT.city}, ${EVENT.region} (venue to be announced)`,
-      ...(CONFIG.venue.mapsUrl && { hasMap: CONFIG.venue.mapsUrl }),
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: EVENT.city,
-        addressRegion: EVENT.region,
-        addressCountry: 'IN',
-      },
-    },
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'INR',
-      availability: 'https://schema.org/InStock',
-      url: `${SITE.url}/register`,
+      name: MEETUP_01.venue,
+      hasMap: MEETUP_01.mapsUrl,
+      address: { '@type': 'PostalAddress', addressLocality: MEETUP_01.city, addressRegion: MEETUP_01.region, addressCountry: 'IN' },
     },
     organizer: { '@id': `${SITE.url}/#org` },
     performer: SPEAKERS.map((s) => ({
@@ -52,15 +51,6 @@ export function structuredData() {
     })),
   };
 
-  const faq = {
-    '@type': 'FAQPage',
-    mainEntity: FAQ.map(({ q, a }) => ({
-      '@type': 'Question',
-      name: q,
-      acceptedAnswer: { '@type': 'Answer', text: a },
-    })),
-  };
-
-  // Google's event listing needs a start date, so the Event is left out until the date is fixed.
-  return { '@context': 'https://schema.org', '@graph': [organization, ...(event ? [event] : []), faq] };
+  const graph = page === 'home' ? [organization, website] : page === 'meetup' ? [organization, event] : [organization];
+  return { '@context': 'https://schema.org', '@graph': graph };
 }

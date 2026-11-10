@@ -1,41 +1,20 @@
-import { useEffect, useRef } from 'react';
-import { EVENT } from '../content';
+import { SITE } from '../content';
+import { useFitText } from '../fit';
 import { Arrow } from './Arrow';
+import { Lockup } from './Logo';
 import { Pixel } from './Pixel';
-import { Directions } from './Venue';
 
-// Scale the headline so its longest line exactly fills the cell. CSS gives a close vw fallback before JS runs.
-function useFitText() {
-  const ref = useRef<HTMLParagraphElement>(null);
-  useEffect(() => {
-    const mark = ref.current;
-    if (!mark) return;
-    const fit = () => {
-      const box = mark.parentElement!;
-      const cs = getComputedStyle(box);
-      const avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      mark.style.fontSize = '100px';
-      const w = mark.getBoundingClientRect().width;
-      if (w > 0) mark.style.fontSize = `${Math.min(230, Math.floor(((100 * avail) / w) * 0.995))}px`;
-    };
-    fit();
-    document.fonts?.ready.then(fit);
-    window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
-  }, []);
-  return ref;
-}
-
+// The home page opens with the wordmark, filling the frame, over the Kota skyline.
 export function Hero() {
-  const markRef = useFitText();
+  const markRef = useFitText<HTMLParagraphElement>(240);
   return (
     <>
-      <section className="band" aria-label={EVENT.name}>
+      <section className="band" aria-label={SITE.name}>
         <div className="frame">
           <div className="mark-cell">
-            <h1 className="mark" ref={markRef}>
-              <span>Kota’s first</span> <span>AI &amp; tech meetup<span className="sq" aria-hidden="true"></span></span>
-            </h1>
+            <p className="mark wordmark" ref={markRef}>
+              <Lockup />
+            </p>
           </div>
           <div className="hero-sky">
             <div className="sky-track">
@@ -49,23 +28,19 @@ export function Hero() {
         <div className="frame cells hero-lower">
           <div className="pad meta-cell">
             <p className="meta-row mono">
-              {EVENT.start ? <time dateTime={EVENT.start}>{EVENT.when}</time> : <span>{EVENT.when}</span>}
-              <span>kota, rajasthan / free entry</span>
+              <span>kota, rajasthan</span>
+              <span>{SITE.handle}</span>
             </p>
             <div className="venue-line">
-              <p className="slash-big">{EVENT.venue ? `${EVENT.venue}/` : 'venue-coming-soon/'}</p>
-              <Directions className="ghost" />
-            </div>
-          </div>
-          <div className="intro-cell cells">
-            <div className="pad say">
-              <p>{EVENT.description}</p>
-            </div>
-            <div className="pad">
-              <a className="btn big nudge" href="/register">
-                Save your seat <Arrow />
+              <h1 className="slash-big">{SITE.tagline}</h1>
+              <a className="ghost" href="/meetup-01">
+                How Meetup 01 went <Arrow />
               </a>
             </div>
+          </div>
+          <div className="pad say">
+            <p className="motto">{SITE.motto}</p>
+            <p>A community for anyone in Kota who is curious about AI and technology. You don’t need to know coding.</p>
           </div>
         </div>
       </div>
