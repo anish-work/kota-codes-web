@@ -3,8 +3,8 @@ import { SectionHead } from './SectionHead';
 
 export function Who() {
   return (
-    <section aria-labelledby="who-h">
-      <SectionHead id="who" title="who-can-come/" />
+    <section aria-labelledby="who-can-come-h">
+      <SectionHead id="who-can-come" title="who-can-come/" />
       <div className="band">
         <ul className="frame cells who">
           {WHO.map((w) => (

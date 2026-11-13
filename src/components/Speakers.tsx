@@ -1,41 +1,30 @@
 import { SPEAKERS } from '../content';
 import { SectionHead } from './SectionHead';
 
+// The two talks at Meetup 01: photo beside the talk's title, time and speaker.
 export function Speakers() {
   return (
     <section aria-labelledby="speakers-h">
       <SectionHead id="speakers" title="speakers/" />
       <div className="band">
-        <div className="frame cells people">
+        <div className="frame cells talks">
           {SPEAKERS.map((s) => (
-            <figure className="person" key={s.name}>
+            <article className="talk" key={s.name}>
               <div className="portrait" aria-hidden="true">
-                {s.photo ? <img src={s.photo} alt="" loading="lazy" decoding="async" /> : <span>{s.name[0]}</span>}
+                <img src={s.photo} alt="" loading="lazy" decoding="async" />
               </div>
-              <figcaption>
-                {s.name}, {s.org}
-                <em>
-                  {s.role} · {s.topic}
-                </em>
-              </figcaption>
-            </figure>
+              <div className="pad talk-text">
+                <p className="mono">{s.time} / talk</p>
+                <h3>“{s.talk}”</h3>
+                <p className="by">
+                  {s.name}
+                  <span>
+                    {s.role}, {s.org}
+                  </span>
+                </p>
+              </div>
+            </article>
           ))}
-          <figure className="person">
-            <div className="portrait text-only">
-              <span>People from Kota share their own stories</span>
-            </div>
-            <figcaption>
-              Kota stories<em>12:35 pm on the day</em>
-            </figcaption>
-          </figure>
-          <figure className="person">
-            <div className="portrait text-only">
-              <span>More speakers to be announced</span>
-            </div>
-            <figcaption>
-              Follow @kota.codes<em>for updates</em>
-            </figcaption>
-          </figure>
         </div>
       </div>
     </section>

@@ -1,13 +1,8 @@
+import { FACTS } from '../content';
 import { WeaveMark } from './Logo';
 import { SectionHead } from './SectionHead';
 
-const FACTS = [
-  ['#01', 'the first meetup in kota'],
-  ['free', 'entry, snacks and coffee'],
-  ['0', 'coding needed'],
-];
-
-// The woven mark with where it comes from, beside the meetup in three numbers.
+// The woven mark with where it comes from, beside the community in three numbers.
 function Mosaic() {
   return (
     <div className="mosaic">
@@ -35,12 +30,12 @@ export function About() {
         <div className="frame cells about">
           <div className="pad text">
             <p>
-              Kota is full of talented people, but there’s no place where they can meet, learn together and share what
-              they know about technology. Kota Codes is a new community to change that.
+              Kota is full of talented people, but there was no open place to learn tech together. Kota Codes started to
+              change that.
             </p>
             <p>
-              This is our very first meetup. It should feel like a relaxed morning with coffee, good conversations and a few
-              “oh, so that’s how it works” moments.
+              Meetup 01 was the first step. Now we’re a community: people in Kota who meet, learn from each other and share
+              what they know about AI and technology.
             </p>
           </div>
           <Mosaic />

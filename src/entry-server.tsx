@@ -12,5 +12,5 @@ export function render(page: Page) {
 }
 
 export { structuredData };
-export { REGISTER_PAGE, SITE } from './content';
+export { PAGES, SITE } from './content';
 export { MARK_SIZE, MARK_SVG } from './weave';

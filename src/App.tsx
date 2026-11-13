@@ -1,21 +1,24 @@
 import { About } from './components/About';
-import { Countdown } from './components/Countdown';
-import { Day } from './components/Day';
-import { Faq } from './components/Faq';
+import { GetInvolved } from './components/Follow';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
+import { MeetupPage } from './components/Meetup';
+import { Next } from './components/Next';
 import { PageEdge } from './components/Pixel';
-import { Register, RegisterPage } from './components/Register';
-import { Speakers } from './components/Speakers';
-import { Takeaways } from './components/Takeaways';
-import { Venue } from './components/Venue';
+import { Recap } from './components/Recap';
+import { RegisterClosed } from './components/RegisterClosed';
+import { StatusBar } from './components/StatusBar';
 import { Who } from './components/Who';
 
-export type Page = 'home' | 'register';
+export type Page = 'home' | 'meetup' | 'register';
 
-// "/register" (with or without a trailing slash) is the registration page; every other path is the home page.
-export const pageFor = (path: string): Page => (/^\/register\/?$/.test(path) ? 'register' : 'home');
+// "/meetup-01" and "/register" (with or without a trailing slash) have their own pages; every other path is home.
+export function pageFor(path: string): Page {
+  if (/^\/meetup-01\/?$/.test(path)) return 'meetup';
+  if (/^\/register\/?$/.test(path)) return 'register';
+  return 'home';
+}
 
 export function App({ page }: { page: Page }) {
   return (
@@ -23,32 +26,24 @@ export function App({ page }: { page: Page }) {
       <a className="skip" href="#top">
         Skip to content
       </a>
-      <Countdown />
+      <StatusBar />
       <Header page={page} />
       <main id="top">
-        {page === 'register' ? (
-          <RegisterPage />
-        ) : (
+        {page === 'home' && (
           <>
             <Hero />
             <About />
-            <Speakers />
+            <Recap />
+            <Next />
             <Who />
-            <Day />
-            <Venue />
-            <Takeaways />
-            <Faq />
-            <Register />
+            <GetInvolved />
           </>
         )}
+        {page === 'meetup' && <MeetupPage />}
+        {page === 'register' && <RegisterClosed />}
       </main>
-      {/* /register is the chat, filling the screen like an app, so it ends there. */}
-      {page === 'home' && (
-        <>
-          <PageEdge />
-          <Footer />
-        </>
-      )}
+      <PageEdge />
+      <Footer />
     </>
   );
 }
